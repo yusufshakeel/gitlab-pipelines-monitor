@@ -6,6 +6,28 @@ This project will monitor the pipelines of your GitLab projects.
 [![npm version](https://img.shields.io/badge/npm-0.1.0-blue.svg)](https://www.npmjs.com/package/glpm)
 [![npm Downloads](https://img.shields.io/npm/dm/glpm.svg)](https://www.npmjs.com/package/glpm)
 
+> ```shell
+> npm i -g glpm
+> ```
+
+## Table of Contents
+
+- [glpm](#glpm-gitlab-pipelines-monitor)
+- [Prerequisite](#prerequisite)
+- [Getting started](#getting-started)
+
+## Prerequisite
+
+* Node (v12 or higher)
+
+## Getting started
+
+Install the package globally.
+
+```shell
+npm i -g glpm
+```
+
 ## License
 
 It's free :smiley:
