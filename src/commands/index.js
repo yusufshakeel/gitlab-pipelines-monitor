@@ -28,6 +28,14 @@ module.exports = async function commands(argv) {
       return;
     }
 
+    const [command] = argv;
+
+    if (!argv.length || argv[0] === '--help' || argv[1] === '--help') {
+      const params = argv.length > 1 ? { command: argv[0] } : { command: 'intro-manual' };
+      options(params);
+      return;
+    }
+
     const configFileContent = getConfigFile();
     const config = {
       ...configFileContent,
@@ -38,13 +46,6 @@ module.exports = async function commands(argv) {
         ...configFileContent?.api
       }
     };
-    const [command] = argv;
-
-    if (!argv.length || argv[0] === '--help' || argv[1] === '--help') {
-      const params = argv.length > 1 ? { command: argv[0] } : { command: 'intro-manual' };
-      options(params);
-      return;
-    }
 
     try {
       const commandOptions = commandOptionParserHelper(argv);
