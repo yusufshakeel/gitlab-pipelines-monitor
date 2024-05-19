@@ -75,6 +75,9 @@ module.exports = function Status({ config, commandOptions }) {
 
   const getStatusByProjectName = async () => {
     const projectNameFromCommandOptions = commandOptions['-name'];
+    if (!projectNameFromCommandOptions) {
+      throw new Error('[Status] Project name missing.');
+    }
     const firstMatchingProject = Object.values(config.projects).find(v =>
       v.projectName?.includes(projectNameFromCommandOptions)
     );

@@ -23,6 +23,11 @@ const commandHandlerConfig = ({ config, commandOptions }) => ({
 
 module.exports = async function commands(argv) {
   try {
+    if (argv[0] === 'init') {
+      await initialise();
+      return;
+    }
+
     const configFileContent = getConfigFile();
     const config = {
       ...configFileContent,
