@@ -1,0 +1,58 @@
+'use strict';
+
+const options = require('./options');
+const version = require('./version');
+const initialise = require('./initialise');
+const status = require('./status');
+const project = require('./project');
+const {
+  GLPM_COMMAND,
+  DEFAULT_API_TIMEOUT,
+  PER_PAGE,
+  DEFAULT_API_ENDPOINT
+} = require('../constants');
+const getConfigFile = require('../helpers/get-config-file');
+const commandOptionParserHelper = require('../helpers/command-option-parser-helper');
+
+const commandHandlerConfig = ({ config, commandOptions }) => ({
+  version: () => version(),
+  init: () => initialise(),
+  status: () => status({ config, commandOptions }).getStatus(),
+  project: () => project({ config, commandOptions }).run()
+});
+
+module.exports = async function commands(argv) {
+  try {
+    const configFileContent = getConfigFile();
+    const config = {
+      ...configFileContent,
+      api: {
+        apiEndpoint: DEFAULT_API_ENDPOINT,
+        timeout: DEFAULT_API_TIMEOUT,
+        perPage: PER_PAGE,
+        ...configFileContent?.api
+      }
+    };
+    const [command] = argv;
+
+    if (!argv.length || argv[0] === '--help' || argv[1] === '--help') {
+      const params = argv.length > 1 ? { command: argv[0] } : { command: 'intro-manual' };
+      options(params);
+      return;
+    }
+
+    try {
+      const commandOptions = commandOptionParserHelper(argv);
+      const cmdHandler = commandHandlerConfig({ config, commandOptions })[command];
+      if (cmdHandler) {
+        await cmdHandler();
+      } else {
+        console.log(`\nCommand not Found\n\nTry\n➜  ${GLPM_COMMAND} --help\n`);
+      }
+    } catch (e) {
+      console.log('Error', e.message);
+    }
+  } catch (e) {
+    console.log('Error', e.message);
+  }
+};
