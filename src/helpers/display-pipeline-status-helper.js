@@ -1,9 +1,15 @@
 'use strict';
 
 const getStatus = d => {
-  if (d.status === 'success') return '✅ PASSED';
-  if (d.status === 'failed') return '❌ FAILED';
-  return d.status.toUpperCase();
+  const columnWidth = 22;
+  let status = '';
+  if (d.status === 'success') {status = '✅ PASSED';}
+  else if (d.status === 'failed') {status =  '❌ FAILED';}
+  else {
+    status = d.status.toUpperCase();
+  }
+  const rightPadding = new Array(columnWidth - status.length).fill(' ').join('');
+  return `${status}${rightPadding}`;
 };
 
 const getShortCommitId = d => d.sha.substring(0, 9);
@@ -25,11 +31,11 @@ Default Branch: ${project.defaultBranch}
 Project Url: ${project.projectUrl}`
   );
   console.log(
-    '+--------------------------+-----------+-----------------+-----------+---------------'
+    '+--------------------------+-------------------------+-----------------+-----------+---------------'
   );
-  console.log('| Timestamp                | Status    | Pipeline        | Commit    | Branch');
+  console.log('| Timestamp                | Status                  | Pipeline        | Commit    | Branch');
   console.log(
-    '+--------------------------+-----------+-----------------+-----------+---------------'
+    '+--------------------------+-------------------------+-----------------+-----------+---------------'
   );
   pipelines.forEach(d => {
     const updatedAt = d['updated_at'];
@@ -40,7 +46,7 @@ Project Url: ${project.projectUrl}`
     );
   });
   console.log(
-    '+--------------------------+-----------+-----------------+-----------+---------------'
+    '+--------------------------+-------------------------+-----------------+-----------+---------------'
   );
 }
 
