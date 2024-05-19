@@ -14,7 +14,7 @@ module.exports = function Status({ config, commandOptions }) {
 
   const getStatusAndRender = async selectedProject => {
     const httpClient = HttpClient({
-      baseURL: selectedProject.baseURL || config.api.apiEndpoint,
+      baseURL: selectedProject.apiEndpoint || config.api.apiEndpoint,
       timeout: config.api.timeout
     });
     const headers = getHeaders(selectedProject);
