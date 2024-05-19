@@ -39,15 +39,18 @@ const statusCmd = `Fetch the status of the pipelines:
 ➜  ${GLPM_COMMAND} status
 
 This will fetch the status of the default project.
-To add the default project, run ${GLPM_COMMAND} project -add-default
+To add the default project, run ${GLPM_COMMAND} project -set-default
 
   Options
   =========
-  To fetch the status of a particular project.
+  To fetch the status of a particular project by its projectId.
   ➜  ${GLPM_COMMAND} status -projectId=<project_id>
 
-  If project is not added in the ${GLPM_CONFIG_FILE} file then run the following command to add
-  ${GLPM_COMMAND} project -add-project
+    If project is not added in the ${GLPM_CONFIG_FILE} file then run the following command to add
+    ${GLPM_COMMAND} project -add
+
+  To fetch the status of a project by its name.
+  ➜  ${GLPM_COMMAND} status -name=<project_name>
 `;
 
 const projectCmd = `Manage projects.
@@ -59,13 +62,13 @@ const projectCmd = `Manage projects.
   ➜  ${GLPM_COMMAND} project -list
 
   Add a default project details
-  ➜  ${GLPM_COMMAND} project -add-default
+  ➜  ${GLPM_COMMAND} project -set-default
 
   Add/overwrite project details
-  ➜  ${GLPM_COMMAND} project -add-project
+  ➜  ${GLPM_COMMAND} project -add
 
   Remove project details
-  ➜  ${GLPM_COMMAND} project -remove-project
+  ➜  ${GLPM_COMMAND} project -remove
 `;
 
 const optionsMap = {

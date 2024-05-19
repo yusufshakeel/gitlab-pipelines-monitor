@@ -17,7 +17,7 @@ const commandOptionParserHelper = require('../helpers/command-option-parser-help
 const commandHandlerConfig = ({ config, commandOptions }) => ({
   version: () => version(),
   init: () => initialise(),
-  status: () => status({ config, commandOptions }).getStatus(),
+  status: () => status({ config, commandOptions }).run(),
   project: () => project({ config, commandOptions }).run()
 });
 

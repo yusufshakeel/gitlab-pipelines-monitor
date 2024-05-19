@@ -145,9 +145,9 @@ module.exports = function Project({ commandOptions }) {
   const run = async () => {
     const commandMap = {
       '-list': () => list(),
-      '-add-default': () => addDefault(),
-      '-add-project': () => addProject(),
-      '-remove-project': () => removeProject(),
+      '-set-default': () => addDefault(),
+      '-add': () => addProject(),
+      '-remove': () => removeProject(),
       ['default']: () => list()
     };
     const actions = Object.keys(commandMap);
