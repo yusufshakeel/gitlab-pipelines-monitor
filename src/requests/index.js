@@ -1,7 +1,10 @@
 'use strict';
 
 function getProjectById({ httpClient, projectId, headers }) {
-  return httpClient.get({ url: `/projects/${projectId}`, headers });
+  return httpClient.get({
+    url: `/projects/${projectId}`,
+    headers
+  });
 }
 
 function getPipelinesByProjectId({ httpClient, projectId, headers, config }) {
@@ -11,14 +14,14 @@ function getPipelinesByProjectId({ httpClient, projectId, headers, config }) {
   });
 }
 
-function getBranchByName({ httpClient, projectId, branchName, headers }) {
+function getBranchByName({ httpClient, projectId, headers, branchName }) {
   return httpClient.get({
     url: `/projects/${projectId}/repository/branches?search=^${branchName}$`,
     headers
   });
 }
 
-function getPipelineByCommitId({ httpClient, projectId, commitId, headers }) {
+function getPipelineByCommitId({ httpClient, projectId, headers, commitId }) {
   return httpClient.get({
     url: `/projects/${projectId}/pipelines?sha=${commitId}`,
     headers
