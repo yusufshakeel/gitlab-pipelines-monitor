@@ -19,45 +19,45 @@ const getPipelineId = d => {
   return `${pipelineId}${rightPadding}`;
 };
 
+const LOG = console.log;
+
 function displayPipelineStatus({ project, pipelines }) {
-  console.log(
+  LOG(
     `\n\nSTATUS\nProject ID: ${project.projectId}
 Project Name: ${project.projectName}
 Default Branch: ${project.defaultBranch}
 Project Url: ${project.projectUrl}`
   );
-  console.log(
+  LOG(
     '+--------------------------+------------------------+-----------------+-----------+---------------'
   );
-  console.log(
-    '| Timestamp                | Status                 | Pipeline        | Commit    | Branch'
-  );
-  console.log(
+  LOG('| Timestamp                | Status                 | Pipeline        | Commit    | Branch');
+  LOG(
     '+--------------------------+------------------------+-----------------+-----------+---------------'
   );
   pipelines.forEach(d => {
     const updatedAt = d['updated_at'];
     if (d.status === 'success') {
-      console.log(
+      LOG(
         `| ${updatedAt} | ${colors.green(getStatus(d))} | ${getPipelineId(d)} | ${getShortCommitId(
           d
         )} | ${getBranchName(d)}`
       );
     } else if (d.status === 'failed') {
-      console.log(
+      LOG(
         `| ${updatedAt} | ${colors.bgRed(getStatus(d))} | ${getPipelineId(d)} | ${getShortCommitId(
           d
         )} | ${getBranchName(d)}`
       );
     } else {
-      console.log(
+      LOG(
         `| ${updatedAt} | ${getStatus(d)} | ${getPipelineId(d)} | ${getShortCommitId(
           d
         )} | ${getBranchName(d)}`
       );
     }
   });
-  console.log(
+  LOG(
     '+--------------------------+------------------------+-----------------+-----------+---------------'
   );
 }
