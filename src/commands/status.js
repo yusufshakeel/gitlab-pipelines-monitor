@@ -3,7 +3,7 @@
 const { GLPM_COMMAND, GLPM_CONFIG_FILE } = require('../constants');
 const HttpClient = require('../client/http-client');
 const { getHeaders } = require('../helpers/http-request-headers');
-const { getPipelinesByProjectId, getBranchByName, getPipelineByCommitId } = require('../requests');
+const { getPipelinesByProjectId, getPipelinesByBranchName } = require('../requests');
 const { displayPipelineStatus } = require('../helpers/display-pipeline-status-helper');
 
 module.exports = function Status({ config, commandOptions }) {
@@ -25,37 +25,31 @@ module.exports = function Status({ config, commandOptions }) {
       config,
       projectId: selectedProject.projectId
     });
-    const defaultBranchRequest = getBranchByName({
+    const defaultBranchPipelineRequest = getPipelinesByBranchName({
       httpClient,
       headers,
       projectId: selectedProject.projectId,
-      branchName: selectedProject.defaultBranch
+      branchName: selectedProject.defaultBranch,
+      config: { api: { perPage: 1 } }
     });
-    const [pipelinesResponse, defaultBranchResponse] = await Promise.all([
+
+    const [pipelinesResponse, defaultBranchPipelineResponse] = await Promise.all([
       pipelinesRequest,
-      defaultBranchRequest
+      defaultBranchPipelineRequest
     ]);
-    const defaultBranch = defaultBranchResponse.data.find(
-      v => v.name === selectedProject.defaultBranch
-    );
-    if (!defaultBranch) {
-      throw new Error('[Status] Default branch not found.');
-    }
-    const pipelinesOfDefaultBranchResponse = await getPipelineByCommitId({
-      httpClient,
-      headers,
-      config,
-      projectId: selectedProject.projectId,
-      commitId: defaultBranch.commit.id
-    });
-    const latestPipelineOfDefaultBranch = pipelinesOfDefaultBranchResponse.data.find(
+
+    const latestPipelineOfDefaultBranch = defaultBranchPipelineResponse.data.find(
       v => v.ref === selectedProject.defaultBranch
     );
+    if (!latestPipelineOfDefaultBranch) {
+      throw new Error(`[Status] Default branch ${selectedProject.defaultBranch} not found.`);
+    }
+
     displayPipelineStatus({
       project: selectedProject,
-      pipelines: latestPipelineOfDefaultBranch
-        ? [latestPipelineOfDefaultBranch, ...pipelinesResponse.data]
-        : [...pipelinesResponse.data]
+      defaultBranchPipeline:
+        defaultBranchPipelineResponse.status === 200 ? latestPipelineOfDefaultBranch : {},
+      pipelines: pipelinesResponse.status === 200 ? [...pipelinesResponse.data] : []
     });
   };
 
