@@ -44,10 +44,10 @@ describe('Requests tests', () => {
   });
 
   test('Should be able to call getPipelinesByBranchName', () => {
-    getPipelinesByBranchName({ httpClient, projectId, branchName, headers });
+    getPipelinesByBranchName({ httpClient, projectId, branchName, headers, config });
     expect(httpClient.get).toHaveBeenCalledWith({
       headers: { 'Content-Type': 'application/json' },
-      url: '/projects/12345/pipelines?ref=main'
+      url: '/projects/12345/pipelines?ref=main&per_page=10'
     });
   });
 

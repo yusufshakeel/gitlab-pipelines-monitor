@@ -15,7 +15,6 @@ module.exports = function getConfigFile() {
     const fileContent = fs.readFileSync(GLPM_CONFIG_FILE_PATH, 'utf8');
     return JSON.parse(fileContent);
   } catch (e) {
-    console.log(`ERROR. Failed to read ${GLPM_CONFIG_FILE_PATH} file:`, e.message);
-    throw e;
+    throw new Error(`[ERROR] Failed to read ${GLPM_CONFIG_FILE_PATH} file. ${e.message}`);
   }
 };
