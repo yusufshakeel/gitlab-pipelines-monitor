@@ -9,7 +9,7 @@ const {
 
 describe('Requests tests', () => {
   const get = jest.fn(() => {
-    a: 1;
+    1;
   });
   const httpClient = { get };
   const projectId = 12345;
