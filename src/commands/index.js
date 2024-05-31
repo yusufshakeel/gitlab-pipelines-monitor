@@ -56,9 +56,9 @@ module.exports = async function commands(argv) {
         console.log(`\nCommand not Found\n\nTry\n➜  ${GLPM_COMMAND} --help\n`);
       }
     } catch (e) {
-      console.log('Error', e.message);
+      console.log('Error:', e.message);
     }
   } catch (e) {
-    console.log('Error', e.message);
+    console.log('Error:', e.message);
   }
 };

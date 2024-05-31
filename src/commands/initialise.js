@@ -37,7 +37,7 @@ async function run() {
     fs.writeFileSync(GLPM_CONFIG_FILE_PATH, JSON.stringify(getConfig(input)), 'utf8');
     console.log('Done!');
   } catch (error) {
-    console.error('ERROR. init:', error.message);
+    console.error('Init operation failed.', error.message);
   } finally {
     readLine.close();
   }

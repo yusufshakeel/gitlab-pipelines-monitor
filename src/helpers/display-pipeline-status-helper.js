@@ -9,7 +9,9 @@ function displayPipelineStatus({ project, defaultBranchPipeline, pipelines }) {
       `Project Name: ${project.projectName}\n` +
       `Project Url: ${project.projectUrl}\n\n` +
       `Default Branch: ${project.defaultBranch}\n` +
-      `Default Branch status: ${defaultBranchPipeline.status.toUpperCase()}\n`,
+      `Default Branch status: ${defaultBranchPipeline.status.toUpperCase()}\n` +
+      `Default Branch commit: ${defaultBranchPipeline.sha.substring(0, 9)}\n` +
+      `Default Branch pipeline: ${defaultBranchPipeline.id}\n`,
     columns: [
       { name: 'Timestamp', alignment: 'left' },
       { name: 'Pipeline', alignment: 'left' },

@@ -45,8 +45,7 @@ module.exports = function HttpClient({ baseURL, timeout }) {
     try {
       return await instance.get(url, { cancelToken: source.token });
     } catch (e) {
-      console.error(`[HTTP Client] Error GET ${url}: ${e.message}`);
-      throw e;
+      console.log(`[HTTP Client] Error GET ${url}: ${e.message}`);
     } finally {
       clearTimeout(timeoutId);
     }
