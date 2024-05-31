@@ -1,65 +1,48 @@
 'use strict';
-const colors = require('colors');
+const { Table } = require('console-table-printer');
 
-const getStatus = d => {
-  const columnWidth = 22;
-  let status = d.status.toUpperCase();
-  const rightPadding = new Array(columnWidth - status.length).fill(' ').join('');
-  return `${status}${rightPadding}`;
-};
-
-const getShortCommitId = d => d.sha.substring(0, 9);
-
-const getBranchName = d => d.ref.substring(0, 20);
-
-const getPipelineId = d => {
-  const columnWidth = 15;
-  const pipelineId = d.id;
-  const rightPadding = new Array(columnWidth - pipelineId.toString().length).fill(' ').join('');
-  return `${pipelineId}${rightPadding}`;
-};
-
-const LOG = console.log;
-
-function displayPipelineStatus({ project, pipelines }) {
-  LOG(
-    `\n\nSTATUS\nProject ID: ${project.projectId}
-Project Name: ${project.projectName}
-Default Branch: ${project.defaultBranch}
-Project Url: ${project.projectUrl}`
-  );
-  LOG(
-    '+--------------------------+------------------------+-----------------+-----------+---------------'
-  );
-  LOG('| Timestamp                | Status                 | Pipeline        | Commit    | Branch');
-  LOG(
-    '+--------------------------+------------------------+-----------------+-----------+---------------'
-  );
-  pipelines.forEach(d => {
-    const updatedAt = d['updated_at'];
-    if (d.status === 'success') {
-      LOG(
-        `| ${updatedAt} | ${colors.green(getStatus(d))} | ${getPipelineId(d)} | ${getShortCommitId(
-          d
-        )} | ${getBranchName(d)}`
-      );
-    } else if (d.status === 'failed') {
-      LOG(
-        `| ${updatedAt} | ${colors.bgRed(getStatus(d))} | ${getPipelineId(d)} | ${getShortCommitId(
-          d
-        )} | ${getBranchName(d)}`
-      );
-    } else {
-      LOG(
-        `| ${updatedAt} | ${getStatus(d)} | ${getPipelineId(d)} | ${getShortCommitId(
-          d
-        )} | ${getBranchName(d)}`
-      );
+function displayPipelineStatus({ project, defaultBranchPipeline, pipelines }) {
+  const table = new Table({
+    title:
+      '\nReport\n' +
+      `Project ID: ${project.projectId}\n` +
+      `Project Name: ${project.projectName}\n` +
+      `Project Url: ${project.projectUrl}\n\n` +
+      `Default Branch: ${project.defaultBranch}\n` +
+      `Default Branch status: ${defaultBranchPipeline.status.toUpperCase()}\n`,
+    columns: [
+      { name: 'Timestamp', alignment: 'left' },
+      { name: 'Pipeline', alignment: 'left' },
+      { name: 'Commit', alignment: 'left' },
+      { name: 'Status', alignment: 'left' },
+      { name: 'Branch', alignment: 'left', maxLen: 40 }
+    ],
+    colorMap: {
+      custom_red_color: '\x1b[1;97m\x1b[41m'
     }
   });
-  LOG(
-    '+--------------------------+------------------------+-----------------+-----------+---------------'
-  );
+  pipelines.forEach(p => {
+    table.addRow(
+      {
+        Timestamp: new Date(p['updated_at']).toLocaleDateString('en-GB', {
+          year: 'numeric',
+          day: '2-digit',
+          month: 'short',
+          hour: '2-digit',
+          minute: '2-digit',
+          second: '2-digit'
+        }),
+        Pipeline: p.id,
+        Commit: p.sha.substring(0, 9),
+        Status: p.status.toUpperCase(),
+        Branch: p.ref.substring(0, 40)
+      },
+      {
+        color: { success: 'green', failed: 'custom_red_color', running: 'cyan' }[p.status]
+      }
+    );
+  });
+  table.printTable();
 }
 
 module.exports = { displayPipelineStatus };
