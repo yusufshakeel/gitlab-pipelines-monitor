@@ -1,7 +1,7 @@
 'use strict';
 
 function getHeaders(data) {
-  const personalAccessToken = data.personalAccessToken.length
+  const personalAccessToken = data.personalAccessToken?.length
     ? { 'PRIVATE-TOKEN': data.personalAccessToken }
     : {};
   return {
