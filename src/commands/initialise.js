@@ -6,7 +6,8 @@ const {
   GLPM_CONFIG_FILE_PATH,
   DEFAULT_API_TIMEOUT,
   PER_PAGE,
-  DEFAULT_API_ENDPOINT
+  DEFAULT_API_ENDPOINT,
+  MESSAGE
 } = require('../constants');
 const getProjectInput = require('../helpers/get-project-input');
 
@@ -30,7 +31,7 @@ async function run() {
     const prompt = query => new Promise(resolve => readLine.question(query, resolve));
 
     console.log(`This command will help you in creating the ${GLPM_CONFIG_FILE} file.`);
-    console.log('Press Ctrl+C at any time to quit.\n');
+    console.log(MESSAGE.PRESS_CTRL_C_AT_ANY_TIME_TO_QUIT);
 
     const input = await getProjectInput(prompt);
 

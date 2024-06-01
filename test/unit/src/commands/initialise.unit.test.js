@@ -8,7 +8,8 @@ const {
   GLPM_CONFIG_FILE_PATH,
   DEFAULT_API_TIMEOUT,
   PER_PAGE,
-  DEFAULT_API_ENDPOINT
+  DEFAULT_API_ENDPOINT,
+  MESSAGE
 } = require('../../../../src/constants');
 
 jest.mock('fs');
@@ -50,7 +51,7 @@ describe('run', () => {
     expect(console.log).toHaveBeenCalledWith(
       `This command will help you in creating the ${GLPM_CONFIG_FILE} file.`
     );
-    expect(console.log).toHaveBeenCalledWith('Press Ctrl+C at any time to quit.\n');
+    expect(console.log).toHaveBeenCalledWith(MESSAGE.PRESS_CTRL_C_AT_ANY_TIME_TO_QUIT);
     expect(fs.writeFileSync).toHaveBeenCalledWith(
       GLPM_CONFIG_FILE_PATH,
       JSON.stringify({

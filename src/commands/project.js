@@ -1,7 +1,7 @@
 'use strict';
 const fs = require('fs');
 const readline = require('readline');
-const { GLPM_COMMAND, GLPM_CONFIG_FILE, GLPM_CONFIG_FILE_PATH } = require('../constants');
+const { GLPM_COMMAND, GLPM_CONFIG_FILE, GLPM_CONFIG_FILE_PATH, MESSAGE } = require('../constants');
 const getConfigFile = require('../helpers/get-config-file');
 const getProjectInput = require('../helpers/get-project-input');
 
@@ -60,7 +60,7 @@ module.exports = function Project({ commandOptions }) {
         console.log(`| Project Name | ${p.projectName}`);
         console.log(`| Project Url  | ${p.projectUrl}`);
       });
-      console.log('+-----------------+----------------------------');
+      console.log('+--------------+----------------------------');
     } catch (e) {
       throw new Error(`[Project] Unable to read ${GLPM_CONFIG_FILE} file.`);
     }
@@ -75,7 +75,7 @@ module.exports = function Project({ commandOptions }) {
       console.log(
         `This command will help you to add/overwrite project in ${GLPM_CONFIG_FILE} file.`
       );
-      console.log('Press ^C at any time to quit.\n');
+      console.log(MESSAGE.PRESS_CTRL_C_AT_ANY_TIME_TO_QUIT);
 
       const input = await getProjectInput(prompt);
 
@@ -101,7 +101,7 @@ module.exports = function Project({ commandOptions }) {
       console.log(
         `This command will help you to set the default project in ${GLPM_CONFIG_FILE} file.`
       );
-      console.log('Press ^C at any time to quit.\n');
+      console.log(MESSAGE.PRESS_CTRL_C_AT_ANY_TIME_TO_QUIT);
 
       const input = await prompt('Enter Project Id: ');
 
@@ -125,7 +125,7 @@ module.exports = function Project({ commandOptions }) {
       const currentConfig = getConfigFile();
 
       console.log(`This command will help you to remove project from ${GLPM_CONFIG_FILE} file.`);
-      console.log('Press ^C at any time to quit.\n');
+      console.log(MESSAGE.PRESS_CTRL_C_AT_ANY_TIME_TO_QUIT);
 
       const input = await prompt('Enter Project Id: ');
 
