@@ -79,6 +79,6 @@ const optionsMap = {
   project: projectCmd
 };
 
-module.exports = function options(params = {}) {
-  console.log(optionsMap[params.command] ?? '\nCommand not found!\n');
+module.exports = function options(params) {
+  console.log(optionsMap[params?.command] ?? '\nCommand not found!\n');
 };
