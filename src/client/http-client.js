@@ -3,7 +3,7 @@ const axios = require('axios');
 
 module.exports = function HttpClient({ baseURL, timeout }) {
   console.log('[HTTP Client] baseURL:', baseURL);
-  console.log('[HTTP Client] timeout:', timeout);
+  console.log('[HTTP Client] timeout (milliseconds):', timeout);
 
   const instance = axios.create({ baseURL, timeout });
 

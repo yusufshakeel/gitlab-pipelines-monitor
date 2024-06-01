@@ -30,7 +30,7 @@ describe('HttpClient', () => {
     HttpClient({ baseURL, timeout });
     expect(axios.create).toHaveBeenCalledWith({ baseURL, timeout });
     expect(console.log).toHaveBeenCalledWith('[HTTP Client] baseURL:', baseURL);
-    expect(console.log).toHaveBeenCalledWith('[HTTP Client] timeout:', timeout);
+    expect(console.log).toHaveBeenCalledWith('[HTTP Client] timeout (milliseconds):', timeout);
   });
 
   test('should make a GET request and return data on success', async () => {
