@@ -46,7 +46,7 @@ module.exports = async function getProjectInput(prompt) {
     JSON.stringify(
       {
         ...input,
-        personalAccessToken: personalAccessToken.length ? '***' : ''
+        personalAccessToken: '*** REDACTED ***'
       },
       null,
       2
