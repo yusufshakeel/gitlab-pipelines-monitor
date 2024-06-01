@@ -30,7 +30,7 @@ async function run() {
     const prompt = query => new Promise(resolve => readLine.question(query, resolve));
 
     console.log(`This command will help you in creating the ${GLPM_CONFIG_FILE} file.`);
-    console.log('Press ^C at any time to quit.\n');
+    console.log('Press Ctrl+C at any time to quit.\n');
 
     const input = await getProjectInput(prompt);
 
