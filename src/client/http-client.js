@@ -1,9 +1,9 @@
 'use strict';
 const axios = require('axios');
 
-module.exports = function HttpClient({ baseURL, timeout }) {
-  console.log('[HTTP Client] baseURL:', baseURL);
-  console.log('[HTTP Client] timeout (milliseconds):', timeout);
+module.exports = function HttpClient({ baseURL, timeout, httpWireLoggingEnabled = false }) {
+  httpWireLoggingEnabled && console.log('[HTTP Client] baseURL:', baseURL);
+  httpWireLoggingEnabled && console.log('[HTTP Client] timeout (milliseconds):', timeout);
 
   const instance = axios.create({ baseURL, timeout });
 
@@ -14,17 +14,19 @@ module.exports = function HttpClient({ baseURL, timeout }) {
     });
 
   instance.interceptors.request.use(req => {
-    console.log(`[HTTP Client] Request: ${req.method.toUpperCase()} ${req.baseURL}${req.url}`);
+    httpWireLoggingEnabled &&
+      console.log(`[HTTP Client] Request: ${req.method.toUpperCase()} ${req.baseURL}${req.url}`);
     return req;
   });
 
   instance.interceptors.response.use(
     res => {
-      console.log(
-        `[HTTP Client] Response: ${res.status} ${res.config.method.toUpperCase()} ${
-          res.config.baseURL
-        }${res.config.url}`
-      );
+      httpWireLoggingEnabled &&
+        console.log(
+          `[HTTP Client] Response: ${res.status} ${res.config.method.toUpperCase()} ${
+            res.config.baseURL
+          }${res.config.url}`
+        );
       if (res.status === 200) {
         return { status: res.status, data: res.data };
       }

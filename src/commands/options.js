@@ -51,6 +51,9 @@ To add the default project, run ${GLPM_COMMAND} project -set-default
 
   To fetch the status of a project by its name.
   ➜  ${GLPM_COMMAND} status -name=<project_name>
+
+  Verbose
+  ➜  ${GLPM_COMMAND} status -verbose
 `;
 
 const projectCmd = `Manage projects.

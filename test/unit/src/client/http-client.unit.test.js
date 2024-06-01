@@ -27,7 +27,7 @@ describe('HttpClient', () => {
         response: { use: jest.fn() }
       }
     });
-    HttpClient({ baseURL, timeout });
+    HttpClient({ baseURL, timeout, httpWireLoggingEnabled: true });
     expect(axios.create).toHaveBeenCalledWith({ baseURL, timeout });
     expect(console.log).toHaveBeenCalledWith('[HTTP Client] baseURL:', baseURL);
     expect(console.log).toHaveBeenCalledWith('[HTTP Client] timeout (milliseconds):', timeout);
@@ -49,7 +49,7 @@ describe('HttpClient', () => {
         response: { use: jest.fn() }
       }
     });
-    httpClient = HttpClient({ baseURL, timeout });
+    httpClient = HttpClient({ baseURL, timeout, httpWireLoggingEnabled: true });
 
     const promise = httpClient.get({ url: '/test', headers: {} });
 
@@ -74,7 +74,7 @@ describe('HttpClient', () => {
       }
     });
 
-    httpClient = HttpClient({ baseURL, timeout });
+    httpClient = HttpClient({ baseURL, timeout, httpWireLoggingEnabled: true });
 
     const promise = httpClient.get({ url: '/test', headers: {} });
 

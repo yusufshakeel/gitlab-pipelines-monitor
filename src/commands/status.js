@@ -7,6 +7,8 @@ const { getPipelinesByProjectId, getPipelinesByBranchName } = require('../reques
 const { displayPipelineStatus } = require('../helpers/display-pipeline-status-helper');
 
 module.exports = function Status({ config, commandOptions }) {
+  let httpWireLoggingEnabled = commandOptions.hasOwnProperty('-verbose');
+
   const defaultProject = config.projects[config.projects['default']];
   if (!defaultProject) {
     throw new Error(`[Status] Default Project Id is not set. Run ${GLPM_COMMAND} project --help.`);
@@ -15,7 +17,8 @@ module.exports = function Status({ config, commandOptions }) {
   const getStatusAndRender = async selectedProject => {
     const httpClient = HttpClient({
       baseURL: selectedProject.apiEndpoint || config.api.apiEndpoint,
-      timeout: config.api.timeout
+      timeout: config.api.timeout,
+      httpWireLoggingEnabled
     });
     const headers = getHeaders(selectedProject);
 
