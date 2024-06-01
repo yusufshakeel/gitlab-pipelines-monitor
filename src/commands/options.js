@@ -54,6 +54,12 @@ To add the default project, run ${GLPM_COMMAND} project -set-default
 
   Verbose
   ➜  ${GLPM_COMMAND} status -verbose
+
+  Print status in watch mode
+  ➜  ${GLPM_COMMAND} status -watch
+
+  Print status in watch mode every N milliseconds
+  ➜  ${GLPM_COMMAND} status -watch -interval=10000
 `;
 
 const projectCmd = `Manage projects.

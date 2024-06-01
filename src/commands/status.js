@@ -7,7 +7,9 @@ const { getPipelinesByProjectId, getPipelinesByBranchName } = require('../reques
 const { displayPipelineStatus } = require('../helpers/display-pipeline-status-helper');
 
 module.exports = function Status({ config, commandOptions }) {
-  let httpWireLoggingEnabled = commandOptions.hasOwnProperty('-verbose');
+  const httpWireLoggingEnabled = commandOptions.hasOwnProperty('-verbose');
+  const watchModeEnabled = commandOptions.hasOwnProperty('-watch');
+  const watchModeInterval = parseInt(commandOptions['-interval'] || config.watchModeInterval, 10);
 
   const defaultProject = config.projects[config.projects['default']];
   if (!defaultProject) {
@@ -96,6 +98,12 @@ module.exports = function Status({ config, commandOptions }) {
     const matchingCommandAction =
       Object.keys(commandOptions).find(v => actions.includes(v)) || 'default';
     await commandMap[matchingCommandAction]();
+    watchModeEnabled &&
+      setInterval(async () => {
+        console.clear();
+        await commandMap[matchingCommandAction]();
+        console.log(`\nFetched at: ${new Date().toISOString()}`);
+      }, watchModeInterval);
   };
 
   return { run };

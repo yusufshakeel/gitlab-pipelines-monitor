@@ -56,7 +56,8 @@ describe('commands', () => {
         apiEndpoint: 'https://gitlab.com/api/v4',
         perPage: 16,
         timeout: 5000
-      }
+      },
+      watchModeInterval: 60000
     };
     const mockCommandOptions = { '-projectId': '123' };
 
@@ -67,7 +68,10 @@ describe('commands', () => {
     status.mockReturnValue(mockStatus);
 
     await commands(['status', '-projectId', '123']);
-    expect(status).toHaveBeenCalledWith({ config: mockConfig, commandOptions: mockCommandOptions });
+    expect(status).toHaveBeenCalledWith({
+      config: mockConfig,
+      commandOptions: mockCommandOptions
+    });
     expect(mockStatus.run).toHaveBeenCalled();
   });
 
@@ -78,7 +82,8 @@ describe('commands', () => {
         apiEndpoint: 'https://gitlab.com/api/v4',
         perPage: 16,
         timeout: 5000
-      }
+      },
+      watchModeInterval: 60000
     };
     const mockCommandOptions = { '-add': true };
 

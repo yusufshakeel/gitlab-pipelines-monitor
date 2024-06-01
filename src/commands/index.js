@@ -9,7 +9,8 @@ const {
   GLPM_COMMAND,
   DEFAULT_API_TIMEOUT,
   PER_PAGE,
-  DEFAULT_API_ENDPOINT
+  DEFAULT_API_ENDPOINT,
+  CHECK_STATUS_EVERY_N_MILLISECONDS
 } = require('../constants');
 const getConfigFile = require('../helpers/get-config-file');
 const commandOptionParserHelper = require('../helpers/command-option-parser-helper');
@@ -44,7 +45,8 @@ module.exports = async function commands(argv) {
         timeout: DEFAULT_API_TIMEOUT,
         perPage: PER_PAGE,
         ...configFileContent?.api
-      }
+      },
+      watchModeInterval: CHECK_STATUS_EVERY_N_MILLISECONDS
     };
 
     try {
