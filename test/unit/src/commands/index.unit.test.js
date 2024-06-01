@@ -51,7 +51,7 @@ describe('commands', () => {
 
   test('should call status with proper config and commandOptions', async () => {
     const mockConfig = {
-      projects: { default: {} },
+      projects: { ['default']: {} },
       api: {
         apiEndpoint: 'https://gitlab.com/api/v4',
         perPage: 16,
@@ -73,7 +73,7 @@ describe('commands', () => {
 
   test('should call project with proper config and commandOptions', async () => {
     const mockConfig = {
-      projects: { default: {} },
+      projects: { ['default']: {} },
       api: {
         apiEndpoint: 'https://gitlab.com/api/v4',
         perPage: 16,
