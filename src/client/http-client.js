@@ -32,6 +32,7 @@ module.exports = function HttpClient({ baseURL, timeout }) {
     },
     err => {
       console.log(`[HTTP Client] Response error: ${err}`);
+      throw Promise.reject(err);
     }
   );
 
