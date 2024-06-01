@@ -1,7 +1,7 @@
 'use strict';
 const fs = require('fs');
 const readline = require('readline');
-const { GLPM_COMMAND, GLPM_CONFIG_FILE, GLPM_CONFIG_FILE_PATH, MESSAGE } = require('../constants');
+const { GLPM_CONFIG_FILE, GLPM_CONFIG_FILE_PATH, MESSAGE } = require('../constants');
 const getConfigFile = require('../helpers/get-config-file');
 const getProjectInput = require('../helpers/get-project-input');
 
@@ -151,10 +151,8 @@ module.exports = function Project({ commandOptions }) {
       ['default']: () => list()
     };
     const actions = Object.keys(commandMap);
-    const matchingCommandAction = Object.keys(commandOptions).find(v => actions.includes(v));
-    if (!matchingCommandAction) {
-      throw new Error(`[Project] Option missing. Run ${GLPM_COMMAND} project --help.`);
-    }
+    const matchingCommandAction =
+      Object.keys(commandOptions).find(v => actions.includes(v)) || 'default';
     await commandMap[matchingCommandAction]();
   };
 

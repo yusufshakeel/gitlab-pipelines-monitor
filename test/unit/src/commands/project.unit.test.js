@@ -2,12 +2,7 @@
 
 const fs = require('fs');
 const readline = require('readline');
-const {
-  GLPM_CONFIG_FILE,
-  GLPM_CONFIG_FILE_PATH,
-  GLPM_COMMAND,
-  MESSAGE
-} = require('../../../../src/constants');
+const { GLPM_CONFIG_FILE, GLPM_CONFIG_FILE_PATH, MESSAGE } = require('../../../../src/constants');
 const getConfigFile = require('../../../../src/helpers/get-config-file');
 const getProjectInput = require('../../../../src/helpers/get-project-input');
 const Project = require('../../../../src/commands/project');
@@ -218,16 +213,6 @@ describe('Project', () => {
 
       expect(console.error).toHaveBeenCalledWith('[Project] Error: ', 'File not found');
       expect(readlineMock.close).toHaveBeenCalled();
-    });
-  });
-
-  describe('run', () => {
-    test('should throw an error if an invalid command is provided', async () => {
-      const project = Project({ commandOptions: { '-invalid': true } });
-
-      await expect(project.run()).rejects.toThrow(
-        `[Project] Option missing. Run ${GLPM_COMMAND} project --help.`
-      );
     });
   });
 });
