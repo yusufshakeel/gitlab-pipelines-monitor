@@ -7,8 +7,8 @@ const { getPipelinesByProjectId, getPipelinesByBranchName } = require('../reques
 const { displayPipelineStatus } = require('../helpers/display-pipeline-status-helper');
 
 module.exports = function Status({ config, commandOptions }) {
-  const httpWireLoggingEnabled = commandOptions.hasOwnProperty('-verbose');
-  const watchModeEnabled = commandOptions.hasOwnProperty('-watch');
+  const httpWireLoggingEnabled = '-verbose' in commandOptions;
+  const watchModeEnabled = '-watch' in commandOptions;
   const watchModeInterval = parseInt(commandOptions['-interval'] || config.watchModeInterval, 10);
 
   const defaultProject = config.projects[config.projects['default']];
@@ -50,6 +50,7 @@ module.exports = function Status({ config, commandOptions }) {
       throw new Error(`[Status] Default branch ${selectedProject.defaultBranch} not found.`);
     }
 
+    watchModeEnabled && watchModeInterval && console.clear();
     displayPipelineStatus({
       project: selectedProject,
       defaultBranchPipeline:
@@ -100,9 +101,8 @@ module.exports = function Status({ config, commandOptions }) {
     await commandMap[matchingCommandAction]();
     watchModeEnabled &&
       setInterval(async () => {
-        console.clear();
         await commandMap[matchingCommandAction]();
-        console.log(`\nFetched at: ${new Date().toISOString()}`);
+        console.log(`\nLast fetched at: ${new Date().toISOString()}`);
       }, watchModeInterval);
   };
 

@@ -33,7 +33,8 @@
           "timeEnd",
           "error",
           "info",
-          "log"
+          "log",
+          "clear"
         ]
       }
     ],
