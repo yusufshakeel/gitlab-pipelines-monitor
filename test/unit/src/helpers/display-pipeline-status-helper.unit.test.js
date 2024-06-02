@@ -37,7 +37,10 @@ describe('displayPipelineStatus', () => {
         status: 'success',
         sha: 'abcdef1234567890',
         id: 456,
-        updated_at: '2023-06-01T12:34:56Z'
+        updated_at: '2023-06-01T12:34:56Z',
+        user: {
+          name: 'Yusuf Shakeel'
+        }
       },
       pipelines: [
         {
@@ -45,14 +48,20 @@ describe('displayPipelineStatus', () => {
           id: 789,
           sha: 'ghijklm1234567890',
           status: 'failed',
-          ref: 'feature/test-feature'
+          ref: 'feature/test-feature',
+          user: {
+            name: 'Yusuf Shakeel'
+          }
         },
         {
           updated_at: '2023-06-01T12:34:56Z',
           id: 101,
           sha: 'nopqrst1234567890',
           status: 'running',
-          ref: 'bugfix/fix-bug'
+          ref: 'bugfix/fix-bug',
+          user: {
+            name: 'Yusuf Shakeel'
+          }
         }
       ]
     };
@@ -73,7 +82,8 @@ describe('displayPipelineStatus', () => {
         { name: 'Pipeline', alignment: 'left' },
         { name: 'Commit', alignment: 'left' },
         { name: 'Status', alignment: 'left' },
-        { name: 'Branch', alignment: 'left', maxLen: 40 }
+        { name: 'Branch', alignment: 'left' },
+        { name: 'Committer', alignment: 'left' }
       ],
       colorMap: {
         custom_red_color: '\x1b[1;97m\x1b[41m'
@@ -87,7 +97,8 @@ describe('displayPipelineStatus', () => {
         Pipeline: 789,
         Commit: 'ghijklm12',
         Status: 'FAILED',
-        Branch: 'feature/test-feature'
+        Branch: 'feature/test-feature',
+        Committer: 'Yusuf Shakeel'
       },
       { color: 'custom_red_color' }
     );
@@ -97,7 +108,8 @@ describe('displayPipelineStatus', () => {
         Pipeline: 101,
         Commit: 'nopqrst12',
         Status: 'RUNNING',
-        Branch: 'bugfix/fix-bug'
+        Branch: 'bugfix/fix-bug',
+        Committer: 'Yusuf Shakeel'
       },
       { color: 'cyan' }
     );

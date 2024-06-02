@@ -14,6 +14,13 @@ function getPipelinesByProjectId({ httpClient, projectId, headers, config }) {
   });
 }
 
+function getPipelinesById({ httpClient, projectId, pipelineId, headers }) {
+  return httpClient.get({
+    url: `/projects/${projectId}/pipelines/${pipelineId}`,
+    headers
+  });
+}
+
 function getPipelinesByBranchName({ httpClient, projectId, branchName, headers, config }) {
   return httpClient.get({
     url: `/projects/${projectId}/pipelines?ref=${branchName}&per_page=${config.api.perPage}`,
@@ -40,5 +47,6 @@ module.exports = {
   getPipelinesByProjectId,
   getPipelinesByBranchName,
   getBranchByName,
-  getPipelineByCommitId
+  getPipelineByCommitId,
+  getPipelinesById
 };

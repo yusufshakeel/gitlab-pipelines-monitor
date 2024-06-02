@@ -3,7 +3,11 @@
 const { GLPM_COMMAND, GLPM_CONFIG_FILE } = require('../constants');
 const HttpClient = require('../client/http-client');
 const { getHeaders } = require('../helpers/http-request-headers');
-const { getPipelinesByProjectId, getPipelinesByBranchName } = require('../requests');
+const {
+  getPipelinesByProjectId,
+  getPipelinesByBranchName,
+  getPipelinesById
+} = require('../requests');
 const { displayPipelineStatus } = require('../helpers/display-pipeline-status-helper');
 const { formateDateTime } = require('../helpers/datetime-helper');
 
@@ -51,12 +55,30 @@ module.exports = function Status({ config, commandOptions }) {
       throw new Error(`[Status] Default branch ${selectedProject.defaultBranch} not found.`);
     }
 
+    const [defaultBranchPipelineDetailedResponse, ...pipelinesDetailedResponse] = await Promise.all(
+      [
+        getPipelinesById({
+          httpClient,
+          projectId: selectedProject.projectId,
+          pipelineId: latestPipelineOfDefaultBranch.id,
+          headers
+        }),
+        ...pipelinesResponse.data.map(p =>
+          getPipelinesById({
+            httpClient,
+            projectId: selectedProject.projectId,
+            pipelineId: p.id,
+            headers
+          })
+        )
+      ]
+    );
+
     watchModeEnabled && watchModeInterval && console.clear();
     displayPipelineStatus({
       project: selectedProject,
-      defaultBranchPipeline:
-        defaultBranchPipelineResponse.status === 200 ? latestPipelineOfDefaultBranch : {},
-      pipelines: pipelinesResponse.status === 200 ? [...pipelinesResponse.data] : []
+      defaultBranchPipeline: defaultBranchPipelineDetailedResponse.data,
+      pipelines: pipelinesDetailedResponse.map(p => p.data)
     });
   };
 

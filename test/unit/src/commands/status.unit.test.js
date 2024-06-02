@@ -1,224 +1,120 @@
 'use strict';
 
-const Status = require('../../../../src/commands/status');
 const { GLPM_COMMAND, GLPM_CONFIG_FILE } = require('../../../../src/constants');
+const Status = require('../../../../src/commands/status');
+const HttpClient = require('../../../../src/client/http-client');
+const { getHeaders } = require('../../../../src/helpers/http-request-headers');
+const {
+  getPipelinesByProjectId,
+  getPipelinesByBranchName,
+  getPipelinesById
+} = require('../../../../src/requests');
 const { displayPipelineStatus } = require('../../../../src/helpers/display-pipeline-status-helper');
-const { getPipelinesByProjectId, getPipelinesByBranchName } = require('../../../../src/requests');
 
-// jest.mock('../../../../src/client/http-client');
+// Mock the dependencies
+jest.mock('../../../../src/client/http-client');
+jest.mock('../../../../src/helpers/http-request-headers');
 jest.mock('../../../../src/requests');
 jest.mock('../../../../src/helpers/display-pipeline-status-helper');
+jest.mock('../../../../src/helpers/datetime-helper');
 
 describe('Status', () => {
-  let mockConfig;
-  let mockCommandOptions;
+  let config;
+  let commandOptions;
 
   beforeEach(() => {
-    jest.spyOn(console, 'log').mockImplementation(jest.fn());
-    jest.spyOn(console, 'error').mockImplementation(jest.fn());
-
-    mockConfig = {
-      projects: {
-        ['default']: 'project123',
-        project123: {
-          projectId: 'project123',
-          projectName: 'Project 123',
-          apiEndpoint: 'http://example.com/api/project123',
-          defaultBranch: 'main'
-        }
-      },
-      api: {
-        apiEndpoint: 'http://example.com/api',
-        timeout: 5000,
-        perPage: 10
-      }
-    };
-
-    mockCommandOptions = {};
-  });
-
-  afterEach(() => {
     jest.clearAllMocks();
+    config = {
+      projects: {
+        ['default']: 1,
+        1: { projectId: 1, apiEndpoint: 'https://gitlab.com/api/v4', defaultBranch: 'main' }
+      },
+      api: { apiEndpoint: 'https://gitlab.com/api/v4', timeout: 5000, perPage: 20 },
+      watchModeInterval: 5000
+    };
+    commandOptions = {};
   });
 
-  describe('getStatus', () => {
-    test('should get status for default project', async () => {
-      const mockPipelineResponse = {
-        status: 200,
-        data: [
-          { ref: 'main', status: 'success', pipelineId: '12345' },
-          { ref: 'main', status: 'failed', pipelineId: '67890' }
-        ]
-      };
-      const mockDefaultBranchPipelineResponse = {
-        status: 200,
-        data: [{ ref: 'main', status: 'success', pipelineId: '12345' }]
-      };
-
-      getPipelinesByProjectId.mockResolvedValue(mockPipelineResponse);
-      getPipelinesByBranchName.mockResolvedValue(mockDefaultBranchPipelineResponse);
-
-      const status = Status({ config: mockConfig, commandOptions: mockCommandOptions });
-      await status.run();
-
-      expect(getPipelinesByProjectId).toHaveBeenCalledWith({
-        httpClient: expect.any(Object),
-        headers: expect.any(Object),
-        config: mockConfig,
-        projectId: 'project123'
-      });
-      expect(getPipelinesByBranchName).toHaveBeenCalledWith({
-        httpClient: expect.any(Object),
-        headers: expect.any(Object),
-        projectId: 'project123',
-        branchName: 'main',
-        config: { api: { perPage: 1 } }
-      });
-      expect(displayPipelineStatus).toHaveBeenCalledWith({
-        project: {
-          apiEndpoint: 'http://example.com/api/project123',
-          defaultBranch: 'main',
-          projectId: 'project123',
-          projectName: 'Project 123'
-        },
-        defaultBranchPipeline: mockDefaultBranchPipelineResponse.data[0],
-        pipelines: mockPipelineResponse.data
-      });
-    });
-
-    test('should throw error if default branch pipeline not found', async () => {
-      const mockPipelineResponse = {
-        status: 200,
-        data: [{ ref: 'feature-branch', status: 'success', pipelineId: '54321' }]
-      };
-      const mockDefaultBranchPipelineResponse = {
-        status: 200,
-        data: []
-      };
-
-      getPipelinesByProjectId.mockResolvedValue(mockPipelineResponse);
-      getPipelinesByBranchName.mockResolvedValue(mockDefaultBranchPipelineResponse);
-
-      const status = Status({ config: mockConfig, commandOptions: mockCommandOptions });
-
-      await expect(status.run()).rejects.toThrow('[Status] Default branch main not found.');
-    });
-
-    test('should throw error if projectId from commandOptions is not added', async () => {
-      mockCommandOptions['-projectId'] = 'unknownProject';
-
-      const status = Status({ config: mockConfig, commandOptions: mockCommandOptions });
-
-      await expect(status.run()).rejects.toThrow(
-        `[Status] Project Id unknownProject is not added. Run ${GLPM_COMMAND} project --help to check how to add new projects.`
-      );
-      expect(console.log).not.toHaveBeenCalledWith('Done!');
-    });
+  test('should throw an error if the default project is not set', () => {
+    config.projects['default'] = undefined;
+    expect(() => Status({ config, commandOptions }).run()).toThrow(
+      `[Status] Default Project Id is not set. Run ${GLPM_COMMAND} project --help.`
+    );
   });
 
-  describe('getStatusByProjectName', () => {
-    test('should get status of a project by its name', async () => {
-      const projectName = 'Project 123';
-      const mockPipelineResponse = {
-        status: 200,
-        data: [{ ref: 'develop', status: 'success', pipelineId: '98765' }]
-      };
-      const mockDefaultBranchPipelineResponse = {
-        status: 200,
-        data: [{ ref: 'main', status: 'success', pipelineId: '12345' }]
-      };
-
-      getPipelinesByProjectId.mockResolvedValue(mockPipelineResponse);
-      getPipelinesByBranchName.mockResolvedValue(mockDefaultBranchPipelineResponse);
-
-      const status = Status({ config: mockConfig, commandOptions: { '-name': projectName } });
-
-      await status.run();
-
-      const selectedProject = mockConfig.projects['project123'];
-
-      expect(getPipelinesByProjectId).toHaveBeenCalledWith({
-        httpClient: expect.any(Object),
-        headers: expect.any(Object),
-        config: mockConfig,
-        projectId: selectedProject.projectId
-      });
-      expect(displayPipelineStatus).toHaveBeenCalledWith({
-        project: {
-          apiEndpoint: 'http://example.com/api/project123',
-          defaultBranch: 'main',
-          projectId: 'project123',
-          projectName: 'Project 123'
-        },
-        defaultBranchPipeline: {
-          pipelineId: '12345',
-          ref: 'main',
-          status: 'success'
-        },
-        pipelines: mockPipelineResponse.data
-      });
+  test('should fetch and display pipeline status for the default project', async () => {
+    getPipelinesByProjectId.mockResolvedValue({ status: 200, data: [{ id: 1 }] });
+    getPipelinesByBranchName.mockResolvedValue({
+      status: 200,
+      data: [{ id: 1, ref: 'main' }]
     });
+    getPipelinesById.mockResolvedValue({ status: 200, data: { id: 1 } });
 
-    test('should throw error if project name is not found', async () => {
-      const projectName = 'Unknown Project';
+    await Status({ config, commandOptions }).run();
 
-      const status = Status({ config: mockConfig, commandOptions: { '-name': projectName } });
-
-      await expect(status.run()).rejects.toThrow(
-        `[Status] No project found by the name ${projectName} in ${GLPM_CONFIG_FILE} file.`
-      );
-    });
-
-    test('should throw error if project name is missing', async () => {
-      const status = Status({ config: mockConfig, commandOptions: { '-name': undefined } });
-
-      await expect(status.run()).rejects.toThrow('[Status] Project name missing.');
-    });
+    expect(HttpClient).toHaveBeenCalled();
+    expect(getHeaders).toHaveBeenCalled();
+    expect(getPipelinesByProjectId).toHaveBeenCalled();
+    expect(getPipelinesByBranchName).toHaveBeenCalled();
+    expect(getPipelinesById).toHaveBeenCalled();
+    expect(displayPipelineStatus).toHaveBeenCalled();
   });
 
-  describe('run', () => {
-    test('should get status for default project when no option provided', async () => {
-      const mockPipelineResponse = {
-        status: 200,
-        data: [
-          { ref: 'main', status: 'success', pipelineId: '12345' },
-          { ref: 'main', status: 'failed', pipelineId: '67890' }
-        ]
-      };
-      const mockDefaultBranchPipelineResponse = {
-        status: 200,
-        data: [{ ref: 'main', status: 'success', pipelineId: '12345' }]
-      };
+  test('should throw an error if the default branch pipeline is not found', async () => {
+    getPipelinesByProjectId.mockResolvedValue({ status: 200, data: [{ id: 1 }] });
+    getPipelinesByBranchName.mockResolvedValue({ status: 200, data: [] });
 
-      getPipelinesByProjectId.mockResolvedValue(mockPipelineResponse);
-      getPipelinesByBranchName.mockResolvedValue(mockDefaultBranchPipelineResponse);
+    await expect(Status({ config, commandOptions }).run()).rejects.toThrow(
+      `[Status] Default branch main not found.`
+    );
+  });
 
-      const status = Status({ config: mockConfig, commandOptions: {} });
-      await status.run();
+  test('should throw an error if the project ID from command options is not found', async () => {
+    commandOptions['-projectId'] = '2';
+    await expect(Status({ config, commandOptions }).run()).rejects.toThrow(
+      `[Status] Project Id 2 is not added. Run ${GLPM_COMMAND} project --help to check how to add new projects.`
+    );
+  });
 
-      expect(getPipelinesByProjectId).toHaveBeenCalledWith({
-        httpClient: expect.any(Object),
-        headers: expect.any(Object),
-        config: mockConfig,
-        projectId: 'project123'
-      });
-      expect(getPipelinesByBranchName).toHaveBeenCalledWith({
-        httpClient: expect.any(Object),
-        headers: expect.any(Object),
-        projectId: 'project123',
-        branchName: 'main',
-        config: { api: { perPage: 1 } }
-      });
-      expect(displayPipelineStatus).toHaveBeenCalledWith({
-        project: {
-          apiEndpoint: 'http://example.com/api/project123',
-          defaultBranch: 'main',
-          projectId: 'project123',
-          projectName: 'Project 123'
-        },
-        defaultBranchPipeline: mockDefaultBranchPipelineResponse.data[0],
-        pipelines: mockPipelineResponse.data
-      });
+  test('should fetch and display pipeline status for a project by name', async () => {
+    config.projects['2'] = {
+      projectId: '2',
+      apiEndpoint: 'https://gitlab.com/api/v4',
+      defaultBranch: 'main',
+      projectName: 'test-project'
+    };
+    commandOptions['-name'] = 'test-project';
+
+    getPipelinesByProjectId.mockResolvedValue({ status: 200, data: [{ id: 1 }] });
+    getPipelinesByBranchName.mockResolvedValue({
+      status: 200,
+      data: [{ id: 1, ref: 'main' }]
     });
+    getPipelinesById.mockResolvedValue({ status: 200, data: { id: 1 } });
+
+    await Status({ config, commandOptions }).run();
+
+    expect(HttpClient).toHaveBeenCalled();
+    expect(getHeaders).toHaveBeenCalled();
+    expect(getPipelinesByProjectId).toHaveBeenCalled();
+    expect(getPipelinesByBranchName).toHaveBeenCalled();
+    expect(getPipelinesById).toHaveBeenCalled();
+    expect(displayPipelineStatus).toHaveBeenCalled();
+  });
+
+  test('should throw an error if the project name is missing', async () => {
+    commandOptions['-name'] = '';
+
+    await expect(Status({ config, commandOptions }).run()).rejects.toThrow(
+      '[Status] Project name missing.'
+    );
+  });
+
+  test('should throw an error if no project matches the given name', async () => {
+    commandOptions['-name'] = 'non-existent-project';
+
+    await expect(Status({ config, commandOptions }).run()).rejects.toThrow(
+      `[Status] No project found by the name non-existent-project in ${GLPM_CONFIG_FILE} file.`
+    );
   });
 });

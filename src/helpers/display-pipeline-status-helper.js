@@ -17,7 +17,8 @@ function displayPipelineStatus({ project, defaultBranchPipeline, pipelines }) {
       { name: 'Pipeline', alignment: 'left' },
       { name: 'Commit', alignment: 'left' },
       { name: 'Status', alignment: 'left' },
-      { name: 'Branch', alignment: 'left', maxLen: 40 }
+      { name: 'Branch', alignment: 'left' },
+      { name: 'Committer', alignment: 'left' }
     ],
     colorMap: {
       custom_red_color: '\x1b[1;97m\x1b[41m'
@@ -30,7 +31,8 @@ function displayPipelineStatus({ project, defaultBranchPipeline, pipelines }) {
         Pipeline: p.id,
         Commit: p.sha.substring(0, 9),
         Status: p.status.toUpperCase(),
-        Branch: p.ref.substring(0, 40)
+        Branch: p.ref.substring(0, 30),
+        Committer: p.user.name.substring(0, 30)
       },
       {
         color: { success: 'green', failed: 'custom_red_color', running: 'cyan' }[p.status]
