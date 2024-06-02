@@ -1,0 +1,17 @@
+body {
+    padding-top: 60px;
+}
+
+#select-container-project {
+    width: 300px;
+}
+#select-container-interval {
+    width: 200px;
+}
+
+.pipeline-card-container a {
+    text-decoration: none;
+}
+.pipeline-card:hover {
+    box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+}

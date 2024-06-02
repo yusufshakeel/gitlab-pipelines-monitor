@@ -5,23 +5,60 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <title>glpm (gitlab-pipelines-monitor)</title>
+    <link rel="stylesheet" href="style/style.css">
   </head>
   <body>
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <div class="container">
-            <a class="navbar-brand" href="#">glpm</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-                <div class="navbar-nav">
-                    <a class="nav-link" href="https://github.com/yusufshakeel/glpm">GitHub</a>
-                    <a class="nav-link" href="https://www.npmjs.com/package/glpm">NPM</a>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
+      <div class="container-fluid">
+        <a class="navbar-brand" href="#">glpm</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+          <div class="navbar-nav">
+            <a class="nav-link" href="https://github.com/yusufshakeel/glpm">GitHub</a>
+            <a class="nav-link" href="https://www.npmjs.com/package/glpm">NPM</a>
+          </div>
+          <div class="ms-auto d-flex">
+            <div class="row">
+              <div class="col-auto">
+                <div class="input-group" id="select-container-project">
+                  <span class="input-group-text">Project</span>
+                  <select class="form-select" aria-label="Project" name="project" id="projectSelect">
+                    <option value="-">-Project-</option>
+                  </select>
                 </div>
+              </div>
+              <div class="col-auto">
+                <div class="input-group" id="select-container-interval">
+                  <span class="input-group-text">Fetch</span>
+                  <select class="form-select" aria-label="Interval" name="interval" id="intervalSelect">
+                    <option value="5">Every 5s</option>
+                    <option value="10">Every 10s</option>
+                    <option value="15">Every 15s</option>
+                    <option value="20">Every 20s</option>
+                    <option value="30">Every 30s</option>
+                    <option value="60">Every 1min</option>
+                    <option value="120">Every 2min</option>
+                    <option value="300" selected>Every 5min</option>
+                  </select>
+                </div>
+              </div>
+              <div class="col-auto">
+                <button class="btn btn-primary" type="button" id="runBtn" disabled>Run</button>
+              </div>
             </div>
+          </div>
         </div>
+      </div>
     </nav>
 
+    <div id="project-container"></div>
+    <div class="container-fluid">
+      <div id="pipelines-container" class="my-2 row text-center"></div>
+    </div>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+    <script src="script/script.js"></script>
   </body>
 </html>

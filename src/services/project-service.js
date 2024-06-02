@@ -26,7 +26,6 @@ module.exports = function projectService() {
     try {
       const configFileContent = getConfigFile();
       const selectedProject = configFileContent.projects[projectId];
-      console.log({ projectId, selectedProject });
       if (!selectedProject?.projectId) {
         return { status: 404, error: { message: 'Project Id not found.' } };
       }
