@@ -5,10 +5,9 @@ const { formateDateTime } = require('../helpers/datetime-helper');
 function displayPipelineStatus({ project, defaultBranchPipeline, pipelines }) {
   const table = new Table({
     title:
-      `\nPROJECT: ${project.projectName}\n--------------------\n` +
-      `Id: ${project.projectId}\n` +
-      `Url: ${project.projectUrl}\n\n` +
-      `DEFAULT BRANCH: ${project.defaultBranch}\n--------------------\n` +
+      `\nPROJECT: (Id: ${project.projectId}) ${project.projectName}\n` +
+      `Url: ${project.projectUrl}\n` +
+      `DEFAULT BRANCH: ${project.defaultBranch}\n` +
       `Status: ${defaultBranchPipeline.status.toUpperCase()} | ` +
       `Commit: ${defaultBranchPipeline.sha.substring(0, 8)} | ` +
       `Pipeline: ${defaultBranchPipeline.id} | ` +

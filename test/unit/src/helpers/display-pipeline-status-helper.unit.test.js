@@ -61,10 +61,9 @@ describe('displayPipelineStatus', () => {
 
     expect(Table).toHaveBeenCalledWith({
       title:
-        '\nPROJECT: Test Project\n--------------------\n' +
-        'Id: 123\n' +
-        'Url: http://example.com\n\n' +
-        'DEFAULT BRANCH: main\n--------------------\n' +
+        '\nPROJECT: (Id: 123) Test Project\n' +
+        'Url: http://example.com\n' +
+        'DEFAULT BRANCH: main\n' +
         'Status: SUCCESS | ' +
         'Commit: abcdef12 | ' +
         'Pipeline: 456 | ' +
