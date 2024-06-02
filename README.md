@@ -3,22 +3,27 @@
 This project will monitor the pipelines of your GitLab projects.
 
 [![license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/yusufshakeel/glpm)
-[![npm version](https://img.shields.io/badge/npm-0.2.0-blue.svg)](https://www.npmjs.com/package/glpm)
+[![npm version](https://img.shields.io/badge/npm-0.2.1-blue.svg)](https://www.npmjs.com/package/glpm)
 [![npm Downloads](https://img.shields.io/npm/dm/glpm.svg)](https://www.npmjs.com/package/glpm)
 
-> ```shell
-> npm i -g glpm
-> ```
+![Image](./assets//screenshot.png)
 
 ## Table of Contents
 
-- [glpm](#glpm-gitlab-pipelines-monitor)
-- [Prerequisite](#prerequisite)
-- [Getting started](#getting-started)
+- [glpm (gitlab-pipelines-monitor)](#glpm-gitlab-pipelines-monitor)
+  - [Table of Contents](#table-of-contents)
+  - [Prerequisite](#prerequisite)
+  - [Getting started](#getting-started)
+  - [Run](#run)
+  - [Initialise](#initialise)
+  - [Check status](#check-status)
+  - [Help](#help)
+  - [License](#license)
+  - [Donate](#donate)
 
 ## Prerequisite
 
-- Node (v12 or higher)
+- Node (v14 or higher)
 
 ## Getting started
 
@@ -34,12 +39,36 @@ npm i -g glpm
 glpm
 ```
 
+## Initialise
+
+```shell
+glpm init
+```
+
+## Check status
+
+```shell
+glpm status
+```
+
+Run in watch mode.
+
+```shell
+glpm status -watch -interval=10000
+```
+
+## Help
+
+```shell
+glpm --help
+```
+
 ## License
 
 It's free :smiley:
 
 [MIT License](https://github.com/yusufshakeel/glpm/blob/main/LICENSE) Copyright (c) 2024 Yusuf Shakeel
 
-### Donate
+## Donate
 
 Feeling generous :smiley: [Donate via PayPal](https://www.paypal.me/yusufshakeel)
