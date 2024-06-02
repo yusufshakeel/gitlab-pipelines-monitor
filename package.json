@@ -20,13 +20,12 @@
     "url": "git+https://github.com/yusufshakeel/glpm.git"
   },
   "keywords": [
-    "CRUD",
-    "javascript",
     "nodejs",
-    "database",
-    "postgresql",
-    "mysql",
-    "mariadb"
+    "javascript",
+    "gitlab",
+    "pipelines",
+    "build-monitor",
+    "cicd-pipeline"
   ],
   "author": "Yusuf Shakeel",
   "license": "MIT",
