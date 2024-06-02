@@ -36,7 +36,8 @@ describe('displayPipelineStatus', () => {
       defaultBranchPipeline: {
         status: 'success',
         sha: 'abcdef1234567890',
-        id: 456
+        id: 456,
+        updated_at: '2023-06-01T12:34:56Z'
       },
       pipelines: [
         {
@@ -60,16 +61,16 @@ describe('displayPipelineStatus', () => {
 
     expect(Table).toHaveBeenCalledWith({
       title:
-        '\nReport\n' +
-        'Project ID: 123\n' +
-        'Project Name: Test Project\n' +
-        'Project Url: http://example.com\n\n' +
-        'Default Branch: main\n' +
-        'Default Branch status: SUCCESS\n' +
-        'Default Branch commit: abcdef123\n' +
-        'Default Branch pipeline: 456\n',
+        '\nPROJECT: Test Project\n--------------------\n' +
+        'Id: 123\n' +
+        'Url: http://example.com\n\n' +
+        'DEFAULT BRANCH: main\n--------------------\n' +
+        'Status: SUCCESS | ' +
+        'Commit: abcdef12 | ' +
+        'Pipeline: 456 | ' +
+        'UpdatedAt: 01 Jun 2023, 18:04:56\n',
       columns: [
-        { name: 'Timestamp', alignment: 'left' },
+        { name: 'UpdatedAt', alignment: 'left' },
         { name: 'Pipeline', alignment: 'left' },
         { name: 'Commit', alignment: 'left' },
         { name: 'Status', alignment: 'left' },
@@ -83,7 +84,7 @@ describe('displayPipelineStatus', () => {
     expect(tableInstance.addRow).toHaveBeenCalledTimes(2);
     expect(tableInstance.addRow).toHaveBeenCalledWith(
       {
-        Timestamp: '01 May 2023, 18:04:56',
+        UpdatedAt: '01 May 2023, 18:04:56',
         Pipeline: 789,
         Commit: 'ghijklm12',
         Status: 'FAILED',
@@ -93,7 +94,7 @@ describe('displayPipelineStatus', () => {
     );
     expect(tableInstance.addRow).toHaveBeenCalledWith(
       {
-        Timestamp: '01 Jun 2023, 18:04:56',
+        UpdatedAt: '01 Jun 2023, 18:04:56',
         Pipeline: 101,
         Commit: 'nopqrst12',
         Status: 'RUNNING',

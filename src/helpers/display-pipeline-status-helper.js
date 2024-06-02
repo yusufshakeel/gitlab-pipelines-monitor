@@ -1,19 +1,20 @@
 'use strict';
 const { Table } = require('console-table-printer');
+const { formateDateTime } = require('../helpers/datetime-helper');
 
 function displayPipelineStatus({ project, defaultBranchPipeline, pipelines }) {
   const table = new Table({
     title:
-      '\nReport\n' +
-      `Project ID: ${project.projectId}\n` +
-      `Project Name: ${project.projectName}\n` +
-      `Project Url: ${project.projectUrl}\n\n` +
-      `Default Branch: ${project.defaultBranch}\n` +
-      `Default Branch status: ${defaultBranchPipeline.status.toUpperCase()}\n` +
-      `Default Branch commit: ${defaultBranchPipeline.sha.substring(0, 9)}\n` +
-      `Default Branch pipeline: ${defaultBranchPipeline.id}\n`,
+      `\nPROJECT: ${project.projectName}\n--------------------\n` +
+      `Id: ${project.projectId}\n` +
+      `Url: ${project.projectUrl}\n\n` +
+      `DEFAULT BRANCH: ${project.defaultBranch}\n--------------------\n` +
+      `Status: ${defaultBranchPipeline.status.toUpperCase()} | ` +
+      `Commit: ${defaultBranchPipeline.sha.substring(0, 8)} | ` +
+      `Pipeline: ${defaultBranchPipeline.id} | ` +
+      `UpdatedAt: ${formateDateTime(defaultBranchPipeline['updated_at'])}\n`,
     columns: [
-      { name: 'Timestamp', alignment: 'left' },
+      { name: 'UpdatedAt', alignment: 'left' },
       { name: 'Pipeline', alignment: 'left' },
       { name: 'Commit', alignment: 'left' },
       { name: 'Status', alignment: 'left' },
@@ -26,14 +27,7 @@ function displayPipelineStatus({ project, defaultBranchPipeline, pipelines }) {
   pipelines.forEach(p => {
     table.addRow(
       {
-        Timestamp: new Date(p['updated_at']).toLocaleDateString('en-GB', {
-          year: 'numeric',
-          day: '2-digit',
-          month: 'short',
-          hour: '2-digit',
-          minute: '2-digit',
-          second: '2-digit'
-        }),
+        UpdatedAt: formateDateTime(p['updated_at']),
         Pipeline: p.id,
         Commit: p.sha.substring(0, 9),
         Status: p.status.toUpperCase(),

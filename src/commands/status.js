@@ -5,6 +5,7 @@ const HttpClient = require('../client/http-client');
 const { getHeaders } = require('../helpers/http-request-headers');
 const { getPipelinesByProjectId, getPipelinesByBranchName } = require('../requests');
 const { displayPipelineStatus } = require('../helpers/display-pipeline-status-helper');
+const { formateDateTime } = require('../helpers/datetime-helper');
 
 module.exports = function Status({ config, commandOptions }) {
   const httpWireLoggingEnabled = '-verbose' in commandOptions;
@@ -102,7 +103,7 @@ module.exports = function Status({ config, commandOptions }) {
     watchModeEnabled &&
       setInterval(async () => {
         await commandMap[matchingCommandAction]();
-        console.log(`\nLast fetched at: ${new Date().toISOString()}`);
+        console.log(`\nLast fetched at: ${formateDateTime(new Date())}`);
       }, watchModeInterval);
   };
 

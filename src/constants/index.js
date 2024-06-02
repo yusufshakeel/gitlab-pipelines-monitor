@@ -20,5 +20,18 @@ module.exports = {
   DEFAULT_API_ENDPOINT,
   MESSAGE: {
     PRESS_CTRL_C_AT_ANY_TIME_TO_QUIT: 'Press Ctrl+C at any time to quit.'
+  },
+  DATE_TIME: {
+    LOCAL_DATE_TIME_FORMAT: {
+      LOCALES: 'en-GB',
+      OPTION: {
+        year: 'numeric',
+        day: '2-digit',
+        month: 'short',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit'
+      }
+    }
   }
 };
