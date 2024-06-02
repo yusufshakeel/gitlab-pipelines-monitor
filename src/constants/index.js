@@ -33,5 +33,8 @@ module.exports = {
         second: '2-digit'
       }
     }
+  },
+  SERVER: {
+    HTTP_PORT: process.env.HTTP_PORT || 9000
   }
 };
