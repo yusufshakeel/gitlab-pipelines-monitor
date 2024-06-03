@@ -48,7 +48,7 @@ module.exports = function Status({ config, commandOptions }) {
       defaultBranchPipelineRequest
     ]);
 
-    const latestPipelineOfDefaultBranch = defaultBranchPipelineResponse.data.find(
+    const latestPipelineOfDefaultBranch = defaultBranchPipelineResponse?.data?.find(
       v => v.ref === selectedProject.defaultBranch
     );
     if (!latestPipelineOfDefaultBranch) {
@@ -63,14 +63,14 @@ module.exports = function Status({ config, commandOptions }) {
           pipelineId: latestPipelineOfDefaultBranch.id,
           headers
         }),
-        ...pipelinesResponse.data.map(p =>
+        ...(pipelinesResponse?.data?.map(p =>
           getPipelinesById({
             httpClient,
             projectId: selectedProject.projectId,
             pipelineId: p.id,
             headers
           })
-        )
+        ) || [])
       ]
     );
 
