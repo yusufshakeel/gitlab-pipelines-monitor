@@ -3,8 +3,11 @@ function glpmScript() {
   const projectSelect = document.getElementById('projectSelect');
   const interval = document.getElementById('intervalSelect');
   const pipelinesContainer = document.getElementById('pipelines-container');
+  const lastFetchedAt = document.getElementById('last-fetched-at');
 
   let projectsData = {};
+
+  const renderProjectRow = () => {};
 
   const getPipelineCardHtml = pipelines => {
     return pipelines.map(p => {
@@ -53,12 +56,12 @@ function glpmScript() {
 
   const getStatuses = async () => {
     const selectedProjectId = projectSelect.value;
-    console.log({ selectedProjectId });
     const response = await fetch(`/projects/${selectedProjectId}/statuses`);
     const json = await response.json();
     console.log(json);
     if (json.status === 200) {
       pipelinesContainer.innerHTML = getPipelineCardHtml(json.data.pipelines.all).join('');
+      lastFetchedAt.innerHTML = `Last fetched at: ${new Date().toISOString()}`;
     } else {
       // TODO: error case
     }
@@ -67,6 +70,7 @@ function glpmScript() {
   // run
   getProjects().catch(e => console.log(e));
   runButton.addEventListener('click', async () => {
+    renderProjectRow();
     await getStatuses();
   });
 }

@@ -3,15 +3,15 @@ body {
 }
 
 #select-container-project {
-    width: 300px;
+    width: 360px;
 }
 #select-container-interval {
     width: 200px;
 }
 
 .pipeline-card-container {
-    min-width: 360px;
-    max-width: 360px;
+    min-width: 380px;
+    max-width: 380px;
 }
 
 
