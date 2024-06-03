@@ -15,14 +15,12 @@
           <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-          <div class="navbar-nav">
-            <a class="nav-link" href="https://github.com/yusufshakeel/glpm">GitHub</a>
-            <a class="nav-link" href="https://www.npmjs.com/package/glpm">NPM</a>
-          </div>
           <div class="ms-auto d-flex">
             <div class="row">
+              <div class="col-auto" id="navbar-default-branch-pipeline-status">
+              </div>
               <div class="col-auto">
-                <div class="input-group " id="select-container-project" data-bs-theme="dark">
+                <div class="input-group" id="select-container-project" data-bs-theme="dark">
                   <span class="input-group-text">Project</span>
                   <select class="form-select" aria-label="Project" name="project" id="projectSelect">
                     <option value="-">-Project-</option>
@@ -52,7 +50,9 @@
     </nav>
 
     <div class="container-fluid">
-      <div id="project-container" class="my-2 row"></div>
+      <div class="mb-3 row">
+        <div id="project-container" class="col"></div>
+      </div>
     </div>
     <div class="container-fluid">
       <div id="pipelines-container" class="my-2 row"></div>

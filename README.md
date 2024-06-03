@@ -3,10 +3,12 @@
 This project will monitor the pipelines of your GitLab projects.
 
 [![license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/yusufshakeel/glpm)
-[![npm version](https://img.shields.io/badge/npm-0.2.3-blue.svg)](https://www.npmjs.com/package/glpm)
+[![npm version](https://img.shields.io/badge/npm-0.2.4-blue.svg)](https://www.npmjs.com/package/glpm)
 [![npm Downloads](https://img.shields.io/npm/dm/glpm.svg)](https://www.npmjs.com/package/glpm)
 
-![Image](./assets//screenshot.png)
+![Image](./assets/screenshot.png?v=1)
+
+![Image](./assets/monitor.png?v=1)
 
 ## Table of Contents
 

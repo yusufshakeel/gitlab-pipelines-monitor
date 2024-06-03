@@ -61,30 +61,31 @@ function glpmScript() {
 
   const getProjectDefaultBranchCardHtml = defaultBranch => {
     const cardClass = cardClassMap[defaultBranch.status] || cardClassMap._default;
-    return `<div class='col mx-auto'>
-      <div class="card ${cardClass} mb-4 pipeline-card">
-        <div class="card-body">
-          <h5 class="card-subtitle">${defaultBranch.ref}
-            | ${defaultBranch.status}
-            | <span title="Pipeline">#${defaultBranch.id}</span>
-            | <span title="Commit">${defaultBranch.sha.substring(0, 8)}</span>
-            | Ran for ${formatSeconds(defaultBranch.duration)}
-              and finished
-              <span title="${new Date(defaultBranch.updated_at).toUTCString()}">
+    return `<div class="${cardClass} px-3 py-2 pipeline-card">
+      ${defaultBranch.ref} 
+      | #${defaultBranch.id} 
+      | ${defaultBranch.sha.substring(0, 8)} 
+      | finished <span title="${new Date(defaultBranch.updated_at).toUTCString()}">
                 ${timeAgo(defaultBranch.updated_at)}
               </span>
-            | <span title="Committer">${defaultBranch.user.name.substring(0, 30)}</span>
-          </h5>
-        </div>
-      </div>
+      | <span title="Committer">${defaultBranch.user.name.substring(0, 30)}</span>
     </div>`;
   };
 
   const getPipelineCardHtml = pipelines => {
     return pipelines.map(p => {
       const cardClass = cardClassMap[p.status] || cardClassMap._default;
+      const ranFor = ['success', 'failed'].includes(p.status)
+        ? `<p class="card-subtitle">
+            Ran for ${formatSeconds(p.duration)}
+            and finished
+            <span title="${new Date(p.updated_at).toUTCString()}">
+              ${timeAgo(p.updated_at)}
+            </span>
+          </p>`
+        : '<p class="card-subtitle">Ran for ...</p>';
 
-      return `<div class='col-auto pipeline-card-container me-auto'>
+      return `<div class='col-auto pipeline-card-container'>
         <div class="card ${cardClass} mb-4 pipeline-card">
           <div class="card-header">${p.ref}</div>
           <div class="card-body">
@@ -94,12 +95,7 @@ function glpmScript() {
               <span class="float-end" title="Pipeline">#${p.id}</span>
             </p>
             <p class="card-subtitle" title="Committer">${p.user.name.substring(0, 30)}</p>
-            <p class="card-subtitle">Ran for ${formatSeconds(p.duration)}
-              and finished
-              <span title="${new Date(p.updated_at).toUTCString()}">
-                ${timeAgo(p.updated_at)}
-              </span>
-            </p>
+            ${ranFor}
           </div>
         </div>
       </div>`;

@@ -10,8 +10,7 @@ body {
 }
 
 .pipeline-card-container {
-    min-width: 380px;
-    max-width: 380px;
+    min-width: 400px;
 }
 
 
@@ -28,5 +27,5 @@ body {
     background-color: #198754;
 }
 .glpm-running-card {
-    background-color: #0dcaf0;
+    background-color: #0d6efd;
 }
