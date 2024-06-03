@@ -3,7 +3,7 @@
 This project will monitor the pipelines of your GitLab projects.
 
 [![license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/yusufshakeel/glpm)
-[![npm version](https://img.shields.io/badge/npm-0.2.4-blue.svg)](https://www.npmjs.com/package/glpm)
+[![npm version](https://img.shields.io/badge/npm-0.3.0-blue.svg)](https://www.npmjs.com/package/glpm)
 [![npm Downloads](https://img.shields.io/npm/dm/glpm.svg)](https://www.npmjs.com/package/glpm)
 
 ![Image](./assets/screenshot.png?v=1)
@@ -69,7 +69,7 @@ glpm --help
 ## Server
 
 ```shell
-npm run start
+glpm server
 ```
 
 This will run the localhost server. https://localhost:9000
