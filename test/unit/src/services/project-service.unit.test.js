@@ -1,169 +1,141 @@
 'use strict';
 
-const projectService = require('../../../../src/services/project-service');
-const getConfigFile = require('../../../../src/helpers/get-config-file');
 const HttpClient = require('../../../../src/client/http-client');
 const { getHeaders } = require('../../../../src/helpers/http-request-headers');
-const { getPipelinesByProjectId, getPipelinesByBranchName } = require('../../../../src/requests');
-const { DEFAULT_API_TIMEOUT, PER_PAGE } = require('../../../../src/constants');
+const {
+  getPipelinesByProjectId,
+  getPipelinesByBranchName,
+  getPipelinesById
+} = require('../../../../src/requests');
+const { HTTP_WIRE_LOGGING } = require('../../../../src/constants');
+const ProjectService = require('../../../../src/services/project-service');
 
-jest.mock('../../../../src/helpers/get-config-file');
 jest.mock('../../../../src/client/http-client');
 jest.mock('../../../../src/helpers/http-request-headers');
 jest.mock('../../../../src/requests');
 
-describe('projectService', () => {
+describe('ProjectService', () => {
+  const config = {
+    projects: {
+      ['default']: 'project1',
+      project1: {
+        projectId: '1',
+        projectName: 'Project One',
+        projectUrl: 'http://project.one',
+        apiEndpoint: 'http://api.project.one',
+        defaultBranch: 'main'
+      },
+      project2: {
+        projectId: '2',
+        projectName: 'Project Two',
+        projectUrl: 'http://project.two'
+      }
+    },
+    api: {
+      apiEndpoint: 'http://api.default',
+      timeout: 5000
+    }
+  };
+
+  let service;
+
+  beforeEach(() => {
+    service = ProjectService({ config });
+  });
+
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+
   describe('getProjects', () => {
-    it('should return the correct response when getConfigFile succeeds', async () => {
-      const mockConfigFileContent = {
-        projects: {
-          default: '123',
-          123: {
-            projectId: '123',
-            projectName: 'Test Project',
-            projectUrl: 'http://example.com'
-          },
-          456: {
-            projectId: '456',
-            projectName: 'Another Project',
-            projectUrl: 'http://anotherexample.com'
-          }
-        }
-      };
-
-      getConfigFile.mockReturnValue(mockConfigFileContent);
-
-      const expectedResponse = {
-        status: 200,
-        data: {
-          defaultProjectId: '123',
-          projects: [
-            { id: '123', name: 'Test Project', url: 'http://example.com' },
-            { id: '456', name: 'Another Project', url: 'http://anotherexample.com' }
-          ]
-        }
-      };
-
-      const { getProjects } = projectService();
-      const response = await getProjects();
-      expect(response).toEqual(expectedResponse);
-    });
-
-    it('should return an error response when getConfigFile throws an error', async () => {
-      const mockError = new Error('Mocked Error');
-      getConfigFile.mockImplementation(() => {
-        throw mockError;
+    test('should return the projects in the expected format', async () => {
+      const result = await service.getProjects();
+      expect(result).toEqual({
+        defaultProjectId: 'project1',
+        projects: [
+          { id: '1', name: 'Project One', url: 'http://project.one' },
+          { id: '2', name: 'Project Two', url: 'http://project.two' }
+        ]
       });
-
-      const expectedErrorResponse = {
-        status: 400,
-        error: {
-          message: 'Mocked Error'
-        }
-      };
-
-      const { getProjects } = projectService();
-      const response = await getProjects();
-      expect(response).toEqual(expectedErrorResponse);
     });
   });
 
   describe('getStatuses', () => {
-    it('should return pipeline statuses for a valid project', async () => {
-      const mockConfigFileContent = {
-        projects: {
-          123: {
-            projectId: '123',
-            projectName: 'Test Project',
-            projectUrl: 'http://example.com',
-            apiEndpoint: 'http://api.example.com',
-            defaultBranch: 'main'
-          }
-        },
-        api: {
-          apiEndpoint: 'http://api.example.com',
-          timeout: DEFAULT_API_TIMEOUT,
-          perPage: PER_PAGE
-        }
-      };
+    test('should return the statuses of the pipelines', async () => {
+      const selectedProject = config.projects.project1;
 
-      getConfigFile.mockReturnValue(mockConfigFileContent);
       HttpClient.mockReturnValue({
         get: jest.fn()
       });
-      getHeaders.mockReturnValue({
-        Authorization: 'Bearer token'
+      getHeaders.mockReturnValue({});
+
+      const pipelinesResponse = {
+        data: [{ id: 101 }, { id: 102 }]
+      };
+      const defaultBranchPipelineResponse = {
+        data: [{ id: 103, ref: 'main' }]
+      };
+      const detailedPipelineResponse = {
+        data: { id: 101, status: 'success' }
+      };
+
+      getPipelinesByProjectId.mockResolvedValue(pipelinesResponse);
+      getPipelinesByBranchName.mockResolvedValue(defaultBranchPipelineResponse);
+      getPipelinesById
+        .mockResolvedValueOnce(detailedPipelineResponse)
+        .mockResolvedValueOnce(detailedPipelineResponse)
+        .mockResolvedValueOnce(detailedPipelineResponse);
+
+      const result = await service.getStatuses('project1');
+      expect(result).toEqual({
+        project: {
+          id: '1',
+          name: 'Project One',
+          url: 'http://project.one'
+        },
+        defaultBranchPipeline: { id: 101, status: 'success' },
+        pipelines: [
+          { id: 101, status: 'success' },
+          { id: 101, status: 'success' }
+        ]
       });
 
-      const mockPipelinesResponse = {
-        status: 200,
-        data: [{ id: 'pipeline1' }, { id: 'pipeline2' }]
-      };
-
-      const mockDefaultBranchPipelineResponse = {
-        status: 200,
-        data: [{ id: 'defaultBranchPipeline', ref: 'main' }]
-      };
-
-      getPipelinesByProjectId.mockResolvedValue(mockPipelinesResponse);
-      getPipelinesByBranchName.mockResolvedValue(mockDefaultBranchPipelineResponse);
-
-      const expectedResponse = {
-        status: 200,
-        data: {
-          pipelines: {
-            defaultBranch: { id: 'defaultBranchPipeline', ref: 'main' },
-            all: [{ id: 'pipeline1' }, { id: 'pipeline2' }]
-          }
-        }
-      };
-
-      const { getStatuses } = projectService();
-      const response = await getStatuses('123');
-      expect(response).toEqual(expectedResponse);
-    });
-
-    it('should return an error if projectId is not found', async () => {
-      const mockConfigFileContent = {
-        projects: {
-          456: {
-            projectId: '456',
-            projectName: 'Another Project',
-            projectUrl: 'http://anotherexample.com'
-          }
-        }
-      };
-
-      getConfigFile.mockReturnValue(mockConfigFileContent);
-
-      const expectedErrorResponse = {
-        status: 404,
-        error: {
-          message: 'Project Id not found.'
-        }
-      };
-
-      const { getStatuses } = projectService();
-      const response = await getStatuses('123');
-      expect(response).toEqual(expectedErrorResponse);
-    });
-
-    it('should return an error response when an exception occurs', async () => {
-      const mockError = new Error('Mocked Error');
-      getConfigFile.mockImplementation(() => {
-        throw mockError;
+      expect(HttpClient).toHaveBeenCalledWith({
+        baseURL: 'http://api.project.one',
+        timeout: 5000,
+        httpWireLoggingEnabled: HTTP_WIRE_LOGGING
       });
+      expect(getHeaders).toHaveBeenCalledWith(selectedProject);
+      expect(getPipelinesByProjectId).toHaveBeenCalledWith({
+        httpClient: expect.anything(),
+        headers: {},
+        config,
+        projectId: '1'
+      });
+      expect(getPipelinesByBranchName).toHaveBeenCalledWith({
+        httpClient: expect.anything(),
+        headers: {},
+        projectId: '1',
+        branchName: 'main',
+        config: { api: { perPage: 1 } }
+      });
+      expect(getPipelinesById).toHaveBeenCalledTimes(3);
+    });
 
-      const expectedErrorResponse = {
-        status: 400,
-        error: {
-          message: 'Mocked Error'
-        }
-      };
+    test('should throw an error if project id is not found', async () => {
+      await expect(service.getStatuses('invalidProject')).rejects.toThrow('Project Id not found.');
+    });
 
-      const { getStatuses } = projectService();
-      const response = await getStatuses('123');
-      expect(response).toEqual(expectedErrorResponse);
+    test('should throw an error if pipeline of the default branch is not found', async () => {
+      getPipelinesByBranchName.mockResolvedValueOnce({ data: [] });
+      await expect(service.getStatuses('project1')).rejects.toThrow(
+        'Pipeline of the default branch main not found.'
+      );
+    });
+
+    test('should throw an error if failed to fetch pipelines', async () => {
+      getPipelinesByProjectId.mockResolvedValueOnce({ data: null });
+      await expect(service.getStatuses('project1')).rejects.toThrow('Failed to fetch pipelines.');
     });
   });
 });
