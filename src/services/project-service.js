@@ -29,7 +29,7 @@ module.exports = function ProjectService({ config }) {
     const httpClient = HttpClient({
       baseURL: selectedProject.apiEndpoint || config.api.apiEndpoint,
       timeout: config.api.timeout,
-      httpWireLoggingEnabled: HTTP_WIRE_LOGGING
+      httpWireLoggingEnabled: config.httpWireLoggingEnabled || HTTP_WIRE_LOGGING
     });
     const headers = getHeaders(selectedProject);
 
