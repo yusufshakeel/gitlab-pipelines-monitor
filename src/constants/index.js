@@ -8,6 +8,7 @@ const DEFAULT_API_TIMEOUT = process.env.DEFAULT_API_TIMEOUT || 5000;
 const PER_PAGE = process.env.PER_PAGE || 16;
 const CHECK_STATUS_EVERY_N_MILLISECONDS = process.env.CHECK_STATUS_EVERY_N_MILLISECONDS || 60000;
 const DEFAULT_API_ENDPOINT = process.env.DEFAULT_API_ENDPOINT || 'https://gitlab.com/api/v4';
+const HTTP_WIRE_LOGGING = process.env.HTTP_WIRE_LOGGING === 'enabled';
 
 module.exports = {
   HOME_DIR,
@@ -18,6 +19,7 @@ module.exports = {
   PER_PAGE,
   CHECK_STATUS_EVERY_N_MILLISECONDS,
   DEFAULT_API_ENDPOINT,
+  HTTP_WIRE_LOGGING,
   MESSAGE: {
     PRESS_CTRL_C_AT_ANY_TIME_TO_QUIT: 'Press Ctrl+C at any time to quit.'
   },
