@@ -19,7 +19,8 @@ const commandHandlerConfig = ({ config, commandOptions }) => ({
   version: () => version(),
   init: () => initialise(),
   status: () => status({ config, commandOptions }).run(),
-  project: () => project({ config, commandOptions }).run()
+  project: () => project({ config, commandOptions }).run(),
+  server: () => require('../server')
 });
 
 module.exports = async function commands(argv) {

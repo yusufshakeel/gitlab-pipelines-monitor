@@ -13,6 +13,7 @@ const introManual = `
   init                  Initialise ${GLPM_COMMAND}.
   status                Print the status of pipelines.
   project               Manage projects.
+  server                Start the local server.
   
   Configuration file:
   =========================================
@@ -80,12 +81,17 @@ const projectCmd = `Manage projects.
   ➜  ${GLPM_COMMAND} project -remove
 `;
 
+const serverCmd = `Run the local server.
+➜  ${GLPM_COMMAND} server
+`;
+
 const optionsMap = {
   ['intro-manual']: introManual,
   version: versionCmd,
   init: initCmd,
   status: statusCmd,
-  project: projectCmd
+  project: projectCmd,
+  server: serverCmd
 };
 
 module.exports = function options(params) {
