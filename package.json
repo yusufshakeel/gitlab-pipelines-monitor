@@ -1,6 +1,6 @@
 {
   "name": "glpm",
-  "version": "0.2.3",
+  "version": "0.2.4",
   "description": "This project will monitor the pipelines of your GitLab projects.",
   "main": "src/index.js",
   "bin": {
