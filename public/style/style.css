@@ -1,0 +1,31 @@
+body {
+    padding-top: 60px;
+}
+
+#select-container-project {
+    width: 360px;
+}
+#select-container-interval {
+    width: 200px;
+}
+
+.pipeline-card-container {
+    min-width: 400px;
+}
+
+
+.pipeline-card-container a {
+    text-decoration: none;
+}
+.pipeline-card-container .pipeline-card:hover {
+    box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+}
+.glpm-failed-card {
+    background-color: #dc3545;
+}
+.glpm-success-card {
+    background-color: #198754;
+}
+.glpm-running-card {
+    background-color: #0d6efd;
+}

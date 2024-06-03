@@ -1,15 +1,9 @@
 'use strict';
 
 const { GLPM_COMMAND, GLPM_CONFIG_FILE } = require('../constants');
-const HttpClient = require('../client/http-client');
-const { getHeaders } = require('../helpers/http-request-headers');
-const {
-  getPipelinesByProjectId,
-  getPipelinesByBranchName,
-  getPipelinesById
-} = require('../requests');
 const { displayPipelineStatus } = require('../helpers/display-pipeline-status-helper');
 const { formateDateTime } = require('../helpers/datetime-helper');
+const ProjectService = require('../services/project-service');
 
 module.exports = function Status({ config, commandOptions }) {
   const httpWireLoggingEnabled = '-verbose' in commandOptions;
@@ -21,64 +15,15 @@ module.exports = function Status({ config, commandOptions }) {
     throw new Error(`[Status] Default Project Id is not set. Run ${GLPM_COMMAND} project --help.`);
   }
 
+  const projectService = ProjectService({ config: { ...config, httpWireLoggingEnabled } });
+
   const getStatusAndRender = async selectedProject => {
-    const httpClient = HttpClient({
-      baseURL: selectedProject.apiEndpoint || config.api.apiEndpoint,
-      timeout: config.api.timeout,
-      httpWireLoggingEnabled
-    });
-    const headers = getHeaders(selectedProject);
-
-    const pipelinesRequest = getPipelinesByProjectId({
-      httpClient,
-      headers,
-      config,
-      projectId: selectedProject.projectId
-    });
-    const defaultBranchPipelineRequest = getPipelinesByBranchName({
-      httpClient,
-      headers,
-      projectId: selectedProject.projectId,
-      branchName: selectedProject.defaultBranch,
-      config: { api: { perPage: 1 } }
-    });
-
-    const [pipelinesResponse, defaultBranchPipelineResponse] = await Promise.all([
-      pipelinesRequest,
-      defaultBranchPipelineRequest
-    ]);
-
-    const latestPipelineOfDefaultBranch = defaultBranchPipelineResponse.data.find(
-      v => v.ref === selectedProject.defaultBranch
-    );
-    if (!latestPipelineOfDefaultBranch) {
-      throw new Error(`[Status] Default branch ${selectedProject.defaultBranch} not found.`);
-    }
-
-    const [defaultBranchPipelineDetailedResponse, ...pipelinesDetailedResponse] = await Promise.all(
-      [
-        getPipelinesById({
-          httpClient,
-          projectId: selectedProject.projectId,
-          pipelineId: latestPipelineOfDefaultBranch.id,
-          headers
-        }),
-        ...pipelinesResponse.data.map(p =>
-          getPipelinesById({
-            httpClient,
-            projectId: selectedProject.projectId,
-            pipelineId: p.id,
-            headers
-          })
-        )
-      ]
-    );
-
+    const result = await projectService.getStatuses(selectedProject.projectId);
     watchModeEnabled && watchModeInterval && console.clear();
     displayPipelineStatus({
       project: selectedProject,
-      defaultBranchPipeline: defaultBranchPipelineDetailedResponse.data,
-      pipelines: pipelinesDetailedResponse.map(p => p.data)
+      defaultBranchPipeline: result.defaultBranchPipeline,
+      pipelines: result.pipelines
     });
   };
 
