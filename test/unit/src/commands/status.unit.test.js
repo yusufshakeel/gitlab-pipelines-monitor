@@ -65,7 +65,7 @@ describe('Status', () => {
     getPipelinesByBranchName.mockResolvedValue({ status: 200, data: [] });
 
     await expect(Status({ config, commandOptions }).run()).rejects.toThrow(
-      `[Status] Default branch main not found.`
+      'Pipeline of the default branch main not found.'
     );
   });
 
