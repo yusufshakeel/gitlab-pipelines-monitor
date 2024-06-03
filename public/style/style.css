@@ -21,12 +21,12 @@ body {
 .pipeline-card-container .pipeline-card:hover {
     box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
 }
-.pipeline-card-container .glpm-failed-card {
+.glpm-failed-card {
     background-color: #dc3545;
 }
-.pipeline-card-container .glpm-success-card {
+.glpm-success-card {
     background-color: #198754;
 }
-.pipeline-card-container .glpm-running-card {
+.glpm-running-card {
     background-color: #0dcaf0;
 }
