@@ -9,20 +9,20 @@ function glpmScript() {
   const getPipelineCardHtml = pipelines => {
     return pipelines.map(p => {
       const cardClassMap = {
-        failed: 'bg-danger text-white',
-        success: 'bg-success text-white',
-        running: 'bg-primary text-white',
+        failed: 'glpm-failed-card text-white',
+        success: 'glpm-success-card text-white',
+        running: 'glpm-running-card text-white',
         _default: 'bg-light text-dark'
       };
       const cardClass = cardClassMap[p.status] || cardClassMap._default;
 
-      return `<div class='col-auto pipeline-card-container'>
+      return `<div class='col-auto pipeline-card-container mx-auto'>
         <a href="${p.web_url}" class="card-link ${cardClass}" target="_blank">
-            <div class="card ${cardClass} mb-3 pipeline-card">
-                <div class="card-header">${p.status.toUpperCase()}</div>
+            <div class="card ${cardClass} mb-4 pipeline-card">
+                <div class="card-header">${p.status.toUpperCase().substring(0, 30)}</div>
                 <div class="card-body">
                     <h5 class="card-title">${p.ref}</h5>
-                    <h6 class="card-subtitle my-2 text-body-secondary">Pipeline: ${p.id}</h6>
+                    <h6 class="card-subtitle my-2">Pipeline: ${p.id}</h6>
                     <p class="card-text">Commit: ${p.sha.substring(0, 8)}</p>
                 </div>
             </div>
@@ -34,7 +34,6 @@ function glpmScript() {
   const getProjects = async () => {
     const response = await fetch('/projects');
     const json = await response.json();
-    console.log(json);
     if (json.status === 200) {
       projectsData = { ...json.data };
       if (projectsData.projects.length === 0) {
