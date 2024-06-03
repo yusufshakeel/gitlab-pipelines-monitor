@@ -6,7 +6,6 @@ module.exports = function projectController({ config }) {
 
   const getProjects = async () => {
     try {
-      console.log(projectService);
       const result = await projectService.getProjects();
       return { status: 200, data: result };
     } catch (e) {

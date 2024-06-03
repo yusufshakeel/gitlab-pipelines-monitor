@@ -18,6 +18,7 @@ This project will monitor the pipelines of your GitLab projects.
   - [Initialise](#initialise)
   - [Check status](#check-status)
   - [Help](#help)
+  - [Server](#server)
   - [License](#license)
   - [Donate](#donate)
 
@@ -61,6 +62,20 @@ glpm status -watch -interval=10000
 
 ```shell
 glpm --help
+```
+
+## Server
+
+```shell
+npm run start
+```
+
+This will run the localhost server. https://localhost:9000
+
+Set the HTTP_PORT environment to run the localhost server on different port.
+
+```shell
+export HTTP_PORT=10000
 ```
 
 ## License

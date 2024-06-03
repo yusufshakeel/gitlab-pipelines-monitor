@@ -130,7 +130,6 @@ function glpmScript() {
     const selectedProjectId = projectSelect.value;
     const response = await fetch(`/projects/${selectedProjectId}/statuses`);
     const json = await response.json();
-    console.log(json);
     if (json.status === 200) {
       projectContainer.innerHTML = getProjectDefaultBranchCardHtml(json.data.defaultBranchPipeline);
       pipelinesContainer.innerHTML = getPipelineCardHtml(json.data.pipelines).join('');
