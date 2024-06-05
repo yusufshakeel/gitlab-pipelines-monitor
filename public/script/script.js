@@ -1,4 +1,7 @@
 function glpmScript() {
+  const LOADING = "<p class='alert aleart-secondary text-center'>Loading...</p>";
+  const SOMETHING_WENT_WRONG =
+    "<p class='alert aleart-secondary text-center'>Something went wrong... Please try again...</p>";
   const cardClassMap = {
     failed: 'glpm-failed-card text-white',
     success: 'glpm-success-card text-white',
@@ -8,6 +11,7 @@ function glpmScript() {
   const runButton = document.getElementById('runBtn');
   const projectSelect = document.getElementById('projectSelect');
   const intervalSelect = document.getElementById('intervalSelect');
+  const messageContainer = document.getElementById('message-container');
   const projectContainer = document.getElementById('project-container');
   const pipelinesContainer = document.getElementById('pipelines-container');
   const lastFetchedAt = document.getElementById('last-fetched-at');
@@ -103,6 +107,7 @@ function glpmScript() {
   };
 
   const getProjects = async () => {
+    messageContainer.innerHTML = LOADING;
     const response = await fetch('/projects');
     const json = await response.json();
     if (json.status === 200) {
@@ -117,12 +122,15 @@ function glpmScript() {
       });
       runButton.removeAttribute('disabled');
       projectSelect.innerHTML = html;
+      messageContainer.innerHTML = '';
     } else {
-      // TODO: error case
+      console.log(json);
+      messageContainer.innerHTML = SOMETHING_WENT_WRONG;
     }
   };
 
   const getStatuses = async () => {
+    messageContainer.innerHTML = LOADING;
     const selectedProjectId = projectSelect.value;
     const response = await fetch(`/projects/${selectedProjectId}/statuses`);
     const json = await response.json();
@@ -130,22 +138,32 @@ function glpmScript() {
       projectContainer.innerHTML = getProjectDefaultBranchCardHtml(json.data.defaultBranchPipeline);
       pipelinesContainer.innerHTML = getPipelineCardHtml(json.data.pipelines).join('');
       lastFetchedAt.innerHTML = `<small>Last fetched at: ${new Date().toISOString()}</small>`;
+      messageContainer.innerHTML = '';
     } else {
-      // TODO: error case
+      console.log(json);
+      messageContainer.innerHTML = SOMETHING_WENT_WRONG;
     }
   };
 
   // run
-  getProjects().catch(e => console.log(e));
+  getProjects().catch(e => {
+    console.log(e);
+    messageContainer.innerHTML = SOMETHING_WENT_WRONG;
+  });
   runButton.addEventListener('click', async () => {
-    if (intervalInstance) {
-      clearInterval(intervalInstance);
+    try {
+      if (intervalInstance) {
+        clearInterval(intervalInstance);
+      }
+      await getStatuses();
+      intervalInstance = setInterval(
+        async () => getStatuses(),
+        parseInt(intervalSelect.value * 1000)
+      );
+    } catch (e) {
+      console.log(e);
+      messageContainer.innerHTML = SOMETHING_WENT_WRONG;
     }
-    await getStatuses();
-    intervalInstance = setInterval(
-      async () => getStatuses(),
-      parseInt(intervalSelect.value * 1000)
-    );
   });
 }
 
